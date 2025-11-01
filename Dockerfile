@@ -62,9 +62,10 @@ RUN mkdir -p /app/backend/uploads && chmod 777 /app/backend/uploads
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Copy initialization script
+# Copy initialization and startup scripts
 COPY init.sh /app/init.sh
-RUN chmod +x /app/init.sh
+COPY start-backend.sh /app/start-backend.sh
+RUN chmod +x /app/init.sh /app/start-backend.sh
 
 # Set default environment variables
 ENV SECRET_KEY=change-this-in-production \
