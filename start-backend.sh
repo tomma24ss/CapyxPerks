@@ -7,7 +7,15 @@ export AZURE_AD_CLIENT_ID="${AZURE_AD_CLIENT_ID:-default-client-id}"
 export AZURE_AD_CLIENT_SECRET="${AZURE_AD_CLIENT_SECRET:-default-client-secret}"
 export AZURE_AD_TENANT_ID="${AZURE_AD_TENANT_ID:-default-tenant-id}"
 export AZURE_AD_AUTHORITY="${AZURE_AD_AUTHORITY:-https://login.microsoftonline.com/default}"
-export CORS_ORIGINS="${CORS_ORIGINS:-http://localhost}"
+
+# Auto-detect CORS origins based on environment
+# If KOYEB_PUBLIC_DOMAIN is set, use it; otherwise allow all origins for simplicity
+if [ -n "$KOYEB_PUBLIC_DOMAIN" ]; then
+    export CORS_ORIGINS="${CORS_ORIGINS:-https://$KOYEB_PUBLIC_DOMAIN,http://localhost,http://localhost:3000,http://localhost:5173}"
+else
+    export CORS_ORIGINS="${CORS_ORIGINS:-*}"
+fi
+
 export ALGORITHM="${ALGORITHM:-HS256}"
 export ACCESS_TOKEN_EXPIRE_MINUTES="${ACCESS_TOKEN_EXPIRE_MINUTES:-30}"
 export ENVIRONMENT="${ENVIRONMENT:-production}"

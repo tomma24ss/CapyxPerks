@@ -5,7 +5,16 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ ./
+
+# Create .env.production file to set API URL to empty (uses same origin/relative paths)
+RUN echo 'VITE_API_URL=' > .env.production
+
+# Build frontend - it will use relative paths which nginx will proxy
 RUN npm run build
+
+# Replace any remaining localhost:8000 references with empty string in built files
+# This ensures the frontend makes requests to the same origin
+RUN find dist -type f -name "*.js" -exec sed -i 's|http://localhost:8000||g' {} \;
 
 # Main image with all services
 FROM python:3.11-slim
