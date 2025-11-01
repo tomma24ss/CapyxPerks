@@ -20,7 +20,9 @@ RUN apt-get update && apt-get install -y \
     && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
     && apt-get update && apt-get install -y \
     postgresql-15 \
+    postgresql-client-15 \
     redis-server \
+    redis-tools \
     nginx \
     supervisor \
     && rm -rf /var/lib/apt/lists/*
@@ -79,4 +81,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:80/ || exit 1
 
 # Start services with supervisord
-CMD ["/bin/bash", "-c", "/app/init.sh && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
