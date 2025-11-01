@@ -65,8 +65,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Copy initialization and startup scripts
 COPY init.sh /app/init.sh
 COPY start-backend.sh /app/start-backend.sh
-COPY start-nginx.sh /app/start-nginx.sh
-RUN chmod +x /app/init.sh /app/start-backend.sh /app/start-nginx.sh
+RUN chmod +x /app/init.sh /app/start-backend.sh
 
 # Set default environment variables
 ENV SECRET_KEY=change-this-in-production \
@@ -75,13 +74,12 @@ ENV SECRET_KEY=change-this-in-production \
     ENVIRONMENT=production \
     CORS_ORIGINS=http://localhost
 
-# Expose port 80 by default (can be overridden by Koyeb's PORT env var)
+# Expose port 80 (nginx will serve both frontend and proxy backend)
 EXPOSE 80
-ENV PORT=80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-80}/ || exit 1
+    CMD curl -f http://localhost:80/ || exit 1
 
 # Start services with supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
