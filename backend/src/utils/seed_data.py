@@ -30,22 +30,22 @@ def seed_database():
                 role=UserRole.ADMIN
             ),
             User(
-                email="john.doe@company.com",
-                name="John Doe",
+                email="tomma.vlaemynck.fake@capyx.be",
+                name="Tomma Vlaemynck",
                 start_date=datetime.utcnow(),
                 role=UserRole.EMPLOYEE
             ),
             User(
-                email="jane.smith@company.com",
-                name="Jane Smith",
+                email="Guillaume.verhamme.fake@capyx.be",
+                name="Guillaume Verhamme",
                 start_date=datetime.utcnow(),
-                role=UserRole.SENIOR
+                role=UserRole.EMPLOYEE
             ),
             User(
-                email="intern@company.com",
-                name="Intern User",
+                email="tinael.devresse.fake@capyx.be",
+                name="Tinael Devresse",
                 start_date=datetime.utcnow(),
-                role=UserRole.INTERN
+                role=UserRole.EMPLOYEE
             ),
         ]
         
@@ -186,11 +186,11 @@ def seed_database():
         print(f"   - Created {len(users)} users")
         print(f"   - Created {len(products_data)} products")
         print(f"")
-        print(f"📧 Test Users:")
+        print(f"📧 Capyx Team Users:")
         print(f"   - Admin: laurie.bardare.fake@capyx.be (1000 credits)")
-        print(f"   - Employee: john.doe@company.com (200 credits)")
-        print(f"   - Senior: jane.smith@company.com (300 credits)")
-        print(f"   - Intern: intern@company.com (100 credits)")
+        print(f"   - Employee: tomma.vlaemynck.fake@capyx.be (200 credits)")
+        print(f"   - Employee: Guillaume.verhamme.fake@capyx.be (200 credits)")
+        print(f"   - Employee: tinael.devresse.fake@capyx.be (200 credits)")
         
     except Exception as e:
         print(f"❌ Error seeding database: {e}")
