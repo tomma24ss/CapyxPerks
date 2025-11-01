@@ -183,61 +183,14 @@ npm run dev
 
 ## Deployment
 
-### Option 1: All-in-One Container (Easiest - Recommended for Demo/Dev)
+### Frontend
+Deploy to Vercel or similar static hosting.
 
-Deploy everything in a single container to platforms like Koyeb, Railway, or Fly.io.
+### Backend
+Deploy to AWS ECS, Fly.io, or Render with Docker containers.
 
-**Quick Deploy:**
-```bash
-# Test locally first
-chmod +x test-deployment.sh
-./test-deployment.sh
-
-# Then deploy to Koyeb
-# See KOYEB_DEPLOYMENT.md for detailed instructions
-```
-
-**What's included:**
-- PostgreSQL database
-- Redis cache
-- FastAPI backend
-- React frontend
-- Nginx web server
-
-**Pros:**
-- ✅ Single deployment - super simple
-- ✅ Cost-effective (~$7-15/month)
-- ✅ Perfect for demos and small teams
-
-**Cons:**
-- ⚠️ Data not persistent on restarts
-- ⚠️ Can't scale horizontally
-
-**Read the full guide:** [KOYEB_DEPLOYMENT.md](KOYEB_DEPLOYMENT.md)
-
-### Option 2: Separate Services (Production)
-
-Deploy each service separately for better scalability and reliability.
-
-**Frontend:**
-- Deploy to Vercel, Netlify, or similar static hosting
-- Build: `cd frontend && npm run build`
-
-**Backend:**
-- Deploy to AWS ECS, Fly.io, Railway, or Render
-- Use the `backend/Dockerfile`
-
-**Database:**
-- PostgreSQL: AWS RDS, Supabase, or Railway
-- Redis: Upstash, Redis Cloud, or Railway
-
-### Option 3: Docker Compose (Local Development)
-
-```bash
-docker-compose up -d
-```
-
-See [STARTUP_GUIDE.md](STARTUP_GUIDE.md) for details.
+### Database
+Use AWS RDS for PostgreSQL in production.
 
 ## Security
 

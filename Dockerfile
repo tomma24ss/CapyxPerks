@@ -10,14 +10,19 @@ RUN npm run build
 # Main image with all services
 FROM python:3.11-slim
 
-# Install system dependencies
+# Install system dependencies and add PostgreSQL repository
 RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    lsb-release \
+    procps \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql-keyring.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && apt-get install -y \
     postgresql-15 \
     redis-server \
     nginx \
     supervisor \
-    curl \
-    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up PostgreSQL
