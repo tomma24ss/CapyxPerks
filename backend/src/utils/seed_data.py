@@ -24,8 +24,8 @@ def seed_database():
         # Create sample users
         users = [
             User(
-                email="admin@company.com",
-                name="Admin User",
+                email="laurie.bardare.fake@capyx.be",
+                name="Laurie Bardare",
                 start_date=datetime.utcnow(),
                 role=UserRole.ADMIN
             ),
@@ -187,7 +187,7 @@ def seed_database():
         print(f"   - Created {len(products_data)} products")
         print(f"")
         print(f"📧 Test Users:")
-        print(f"   - Admin: admin@company.com (1000 credits)")
+        print(f"   - Admin: laurie.bardare.fake@capyx.be (1000 credits)")
         print(f"   - Employee: john.doe@company.com (200 credits)")
         print(f"   - Senior: jane.smith@company.com (300 credits)")
         print(f"   - Intern: intern@company.com (100 credits)")

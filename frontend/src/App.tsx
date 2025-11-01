@@ -26,8 +26,8 @@ function App() {
       {isAuthenticated && <Navbar />}
       <main className={isAuthenticated ? 'pt-16' : ''}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
           <Route path="/dev-login" element={<DevLoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route
             path="/"
             element={
