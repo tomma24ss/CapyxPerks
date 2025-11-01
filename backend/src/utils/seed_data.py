@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from src.core.database import SessionLocal, init_db
-from src.models import User, Product, ProductVariant, InventoryLot, CreditLedger, UserRole, CreditType
+from src.models import User, CreditLedger, UserRole, CreditType
 
 
 def seed_database():
@@ -74,117 +74,8 @@ def seed_database():
         
         db.commit()
         
-        # Create sample products
-        products_data = [
-            {
-                "name": "Company T-Shirt",
-                "description": "Premium cotton t-shirt with company logo. Available in multiple colors and sizes.",
-                "base_credits": 50.0,
-                "variants": [
-                    {"size": "S", "color": "Black", "quantity": 25},
-                    {"size": "M", "color": "Black", "quantity": 30},
-                    {"size": "L", "color": "Black", "quantity": 30},
-                    {"size": "XL", "color": "Black", "quantity": 20},
-                    {"size": "S", "color": "Navy", "quantity": 25},
-                    {"size": "M", "color": "Navy", "quantity": 30},
-                    {"size": "L", "color": "Navy", "quantity": 30},
-                    {"size": "XL", "color": "Navy", "quantity": 20},
-                ]
-            },
-            {
-                "name": "Insulated Water Bottle",
-                "description": "Stainless steel 32oz insulated water bottle. Keeps drinks cold for 24 hours.",
-                "base_credits": 75.0,
-                "variants": [
-                    {"size": "32oz", "color": "Silver", "quantity": 50},
-                    {"size": "32oz", "color": "Black", "quantity": 50},
-                    {"size": "32oz", "color": "Blue", "quantity": 40},
-                ]
-            },
-            {
-                "name": "Laptop Backpack",
-                "description": "Durable laptop backpack with padded compartment for 15\" laptop. Multiple pockets.",
-                "base_credits": 120.0,
-                "variants": [
-                    {"size": "One Size", "color": "Charcoal", "quantity": 30},
-                    {"size": "One Size", "color": "Black", "quantity": 30},
-                ]
-            },
-            {
-                "name": "Wireless Mouse",
-                "description": "Ergonomic wireless mouse with precision tracking. Includes USB receiver.",
-                "base_credits": 40.0,
-                "variants": [
-                    {"size": "Standard", "color": "Black", "quantity": 60},
-                    {"size": "Standard", "color": "Gray", "quantity": 40},
-                ]
-            },
-            {
-                "name": "Coffee Mug",
-                "description": "Ceramic 14oz coffee mug with company logo. Microwave and dishwasher safe.",
-                "base_credits": 25.0,
-                "variants": [
-                    {"size": "14oz", "color": "White", "quantity": 100},
-                    {"size": "14oz", "color": "Black", "quantity": 80},
-                ]
-            },
-            {
-                "name": "Hoodie",
-                "description": "Comfortable zip-up hoodie with company branding. Perfect for casual wear.",
-                "base_credits": 85.0,
-                "variants": [
-                    {"size": "S", "color": "Gray", "quantity": 20},
-                    {"size": "M", "color": "Gray", "quantity": 25},
-                    {"size": "L", "color": "Gray", "quantity": 25},
-                    {"size": "XL", "color": "Gray", "quantity": 15},
-                    {"size": "S", "color": "Navy", "quantity": 20},
-                    {"size": "M", "color": "Navy", "quantity": 25},
-                    {"size": "L", "color": "Navy", "quantity": 25},
-                    {"size": "XL", "color": "Navy", "quantity": 15},
-                ]
-            },
-            {
-                "name": "Notebook Set",
-                "description": "Premium set of 3 notebooks with company logo. Perfect for meetings and notes.",
-                "base_credits": 30.0,
-                "variants": [
-                    {"size": "A5", "color": "Mixed", "quantity": 80},
-                ]
-            },
-            {
-                "name": "Desk Organizer",
-                "description": "Bamboo desk organizer with compartments for pens, phone, and accessories.",
-                "base_credits": 45.0,
-                "variants": [
-                    {"size": "Standard", "color": "Natural", "quantity": 40},
-                ]
-            },
-        ]
-        
-        for product_data in products_data:
-            variants_data = product_data.pop("variants")
-            product = Product(**product_data)
-            db.add(product)
-            db.commit()
-            db.refresh(product)
-            
-            # Create variants and inventory
-            for variant_data in variants_data:
-                quantity = variant_data.pop("quantity")
-                variant = ProductVariant(product_id=product.id, **variant_data)
-                db.add(variant)
-                db.commit()
-                db.refresh(variant)
-                
-                # Create inventory
-                inventory = InventoryLot(variant_id=variant.id, quantity=quantity)
-                db.add(inventory)
-            
-            db.commit()
-        
         print(f"✅ Successfully seeded database!")
         print(f"   - Created {len(users)} users")
-        print(f"   - Created {len(products_data)} products")
         print(f"")
         print(f"📧 Capyx Team Users:")
         print(f"   - Admin: laurie.bardare.fake@capyx.be (1000 credits)")
