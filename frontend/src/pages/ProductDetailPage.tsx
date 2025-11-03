@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { productApi } from '../api/api'
 import { useCartStore } from '../store/cartStore'
 import toast from 'react-hot-toast'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getImageUrl } from '../utils/imageUtils'
 
 export default function ProductDetailPage() {
@@ -18,6 +18,13 @@ export default function ProductDetailPage() {
     queryFn: () => productApi.getProduct(Number(id)),
     enabled: !!id,
   })
+
+  // Automatically select the variant if there's only one (default case)
+  useEffect(() => {
+    if (product?.variants && product.variants.length === 1 && !selectedVariant) {
+      setSelectedVariant(product.variants[0])
+    }
+  }, [product, selectedVariant])
 
   if (isLoading) {
     return <div className="container mx-auto px-4 py-8">Loading...</div>
@@ -82,7 +89,7 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            {product.variants && product.variants.length > 0 && (
+            {product.variants && product.variants.length > 1 && (
               <div className="mb-4 md:mb-6">
                 <h3 className="font-semibold mb-2 text-sm md:text-base">Variants:</h3>
                 <div className="space-y-2">
