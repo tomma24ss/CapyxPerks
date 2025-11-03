@@ -182,6 +182,7 @@ echo "  - Dev Users API: http://localhost/api/auth/dev/users"
 echo "========================================="
 echo ""
 echo "Starting backend service..."
+# Start backend via supervisorctl (socket configured in supervisord.conf)
 supervisorctl start backend
 echo "✅ Backend service started"
 
