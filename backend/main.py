@@ -40,29 +40,13 @@ app.add_middleware(
 # Initialize database on startup
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database tables on startup with retry logic"""
-    import time
-    max_retries = 30
-    retry_delay = 1
-    
-    for attempt in range(max_retries):
-        try:
-            init_db()
-            print("✅ Database initialized successfully")
-            if settings.environment == "development":
-                print("🔧 Running in DEVELOPMENT mode")
-                print("📝 Dev login available at: POST /api/auth/dev/login")
-            break
-        except Exception as e:
-            if attempt < max_retries - 1:
-                if attempt == 0:
-                    print(f"⏳ Database not ready yet, waiting for initialization...")
-                print(f"   Retry {attempt + 1}/{max_retries}: {str(e)[:100]}")
-                time.sleep(retry_delay)
-            else:
-                print(f"❌ Failed to initialize database after {max_retries} attempts")
-                print(f"   Last error: {e}")
-                raise
+    """Database already initialized by init-db script"""
+    # Note: init-db script handles database creation and seeding
+    # We don't call init_db() here to avoid connection/transaction issues
+    print("✅ Backend started (database already initialized by init-db)")
+    if settings.environment == "development":
+        print("🔧 Running in DEVELOPMENT mode")
+        print("📝 Dev login available at: POST /api/auth/dev/login")
 
 
 # Mount static files for uploads
