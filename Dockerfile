@@ -72,12 +72,13 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy initialization and startup scripts
-# Cache bust: 2025-11-03-v2
+# Cache bust: 2025-11-03-v5-fix-seeding
 COPY init.sh /app/init.sh
 COPY start-backend.sh /app/start-backend.sh
 RUN chmod +x /app/init.sh /app/start-backend.sh
 
 # Set default environment variables
+# IMPORTANT: Set ENVIRONMENT=development in Koyeb environment variables!
 ENV SECRET_KEY=change-this-in-production \
     ALGORITHM=HS256 \
     ACCESS_TOKEN_EXPIRE_MINUTES=30 \

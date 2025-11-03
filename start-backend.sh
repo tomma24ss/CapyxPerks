@@ -25,15 +25,47 @@ export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/capyxperks"
 export REDIS_URL="redis://localhost:6379/0"
 
 # Debug output
+echo ""
 echo "========================================="
-echo "BACKEND STARTING"
+echo "🚀 BACKEND STARTING"
 echo "========================================="
 echo "ENVIRONMENT: $ENVIRONMENT"
 echo "DATABASE_URL: $DATABASE_URL"
+echo "REDIS_URL: $REDIS_URL"
 echo "CORS_ORIGINS: $CORS_ORIGINS"
+echo "SECRET_KEY: ${SECRET_KEY:0:10}... (truncated)"
 echo "========================================="
+echo ""
+
+# Verify database connection
+echo "Testing database connection..."
+cd /app/backend
+python -c "
+from src.core.database import SessionLocal
+from src.models import User
+try:
+    db = SessionLocal()
+    user_count = db.query(User).count()
+    print(f'✅ Database connected! Users in database: {user_count}')
+    if user_count > 0:
+        users = db.query(User).limit(5).all()
+        print('Sample users:')
+        for user in users:
+            print(f'  - {user.email} ({user.role.value})')
+    else:
+        print('⚠️  WARNING: No users found in database!')
+    db.close()
+except Exception as e:
+    print(f'❌ Database connection failed: {e}')
+    import traceback
+    traceback.print_exc()
+" 2>&1
+
+echo ""
+echo "Starting Uvicorn web server..."
+echo "========================================="
+echo ""
 
 # Start uvicorn
-cd /app/backend
 exec /usr/local/bin/uvicorn main:app --host 0.0.0.0 --port 8000
 
