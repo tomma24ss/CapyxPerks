@@ -25,9 +25,14 @@ export default function DevLoginPage() {
     
     // Fetch existing users for quick selection
     authApi.getDevUsers()
-      .then(setExistingUsers)
+      .then((users) => {
+        console.log('Fetched users:', users)
+        setExistingUsers(users)
+      })
       .catch((error) => {
         console.error('Failed to fetch users:', error)
+        console.error('Error details:', error.response?.data, error.response?.status)
+        toast.error('Failed to load existing users')
       })
   }, [isAuthenticated, navigate])
 

@@ -18,7 +18,10 @@ export const authApi = {
   },
   
   getDevUsers: async () => {
+    console.log('Calling /api/auth/dev/users...')
     const response = await apiClient.get('/api/auth/dev/users')
+    console.log('Response from /api/auth/dev/users:', response.data)
+    console.log('Response type:', typeof response.data, 'Is array?', Array.isArray(response.data))
     return response.data
   },
 }

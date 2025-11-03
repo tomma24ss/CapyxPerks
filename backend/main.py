@@ -22,9 +22,16 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Allow all origins in development since nginx handles the proxying
+cors_origins = settings.cors_origins + ["http://localhost:3001"]
+if settings.environment == "development":
+    cors_origins = ["*"]  # Allow all origins in development
+
+print(f"🌐 CORS Origins: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins + ["http://localhost:3001"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
