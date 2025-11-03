@@ -24,6 +24,15 @@ export ENVIRONMENT="${ENVIRONMENT:-development}"
 export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/capyxperks"
 export REDIS_URL="redis://localhost:6379/0"
 
+# Debug output
+echo "========================================="
+echo "BACKEND STARTING"
+echo "========================================="
+echo "ENVIRONMENT: $ENVIRONMENT"
+echo "DATABASE_URL: $DATABASE_URL"
+echo "CORS_ORIGINS: $CORS_ORIGINS"
+echo "========================================="
+
 # Start uvicorn
 cd /app/backend
 exec /usr/local/bin/uvicorn main:app --host 0.0.0.0 --port 8000
