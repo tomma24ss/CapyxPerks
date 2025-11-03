@@ -36,10 +36,10 @@ done
 # Initialize database schema
 echo "Initializing database schema..."
 cd /app/backend
-python -c "from database import init_db; init_db()" 2>&1 || echo "Database schema initialization failed or already initialized"
+python -c "from src.core.database import init_db; init_db()" 2>&1 || echo "Database schema initialization failed or already initialized"
 
-# Seed database with initial admin user and sample data
-echo "Seeding database with admin user and sample data..."
+# Seed database with 4 sample users (Laurie, Tomma, Guillaume, Tinael)
+echo "Seeding database with sample users..."
 python -c "from src.utils.seed_data import seed_database; seed_database()" 2>&1 || echo "Database seeding skipped or failed"
 
 echo "Initialization complete!"
