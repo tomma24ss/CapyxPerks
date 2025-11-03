@@ -80,7 +80,7 @@ RUN chmod +x /app/init.sh /app/start-backend.sh
 ENV SECRET_KEY=change-this-in-production \
     ALGORITHM=HS256 \
     ACCESS_TOKEN_EXPIRE_MINUTES=30 \
-    ENVIRONMENT=production \
+    ENVIRONMENT=development \
     CORS_ORIGINS=http://localhost
 
 # Expose port 80 (nginx will serve both frontend and proxy backend)

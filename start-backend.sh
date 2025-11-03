@@ -18,7 +18,7 @@ fi
 
 export ALGORITHM="${ALGORITHM:-HS256}"
 export ACCESS_TOKEN_EXPIRE_MINUTES="${ACCESS_TOKEN_EXPIRE_MINUTES:-30}"
-export ENVIRONMENT="${ENVIRONMENT:-production}"
+export ENVIRONMENT="${ENVIRONMENT:-development}"
 
 # Database and Redis URLs (required)
 export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/capyxperks"
