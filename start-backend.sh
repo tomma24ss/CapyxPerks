@@ -37,38 +37,10 @@ echo "SECRET_KEY: ${SECRET_KEY:0:10}... (truncated)"
 echo "========================================="
 echo ""
 
-# Verify database connection (optional - may not be ready yet if init-db is still running)
-echo "Checking database connection..."
-cd /app/backend
-python -c "
-import time
-from src.core.database import SessionLocal
-from src.models import User
-
-# Wait up to 30 seconds for database to be ready
-for i in range(30):
-    try:
-        db = SessionLocal()
-        user_count = db.query(User).count()
-        print(f'✅ Database connected! Users in database: {user_count}')
-        if user_count > 0:
-            users = db.query(User).limit(5).all()
-            print('Sample users:')
-            for user in users:
-                print(f'  - {user.email} ({user.role.value})')
-        else:
-            print('ℹ️  Note: No users found yet (init-db may still be running)')
-        db.close()
-        break
-    except Exception as e:
-        if i == 0:
-            print(f'ℹ️  Database not ready yet, waiting for init-db to complete...')
-        if i < 29:
-            time.sleep(1)
-        else:
-            print(f'⚠️  Database not ready after 30 seconds. Backend will try to initialize it.')
-            print(f'   Error: {e}')
-" 2>&1
+# Wait for init-db to complete before starting backend
+echo "Waiting for init-db to complete database initialization..."
+echo "(Sleeping 15 seconds to give init-db time to create database and tables)"
+sleep 15
 
 echo ""
 echo "Starting Uvicorn web server..."
