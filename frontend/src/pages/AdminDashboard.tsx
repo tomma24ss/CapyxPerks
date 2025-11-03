@@ -275,7 +275,7 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
       return adminApi.createProduct(formDataToSend)
     },
     onSuccess: async (newProduct) => {
-      // Create variants if any, or create a default variant if none specified
+      // Create variants if any
       if (variants.length > 0) {
         for (const variant of variants) {
           await adminApi.createVariant(newProduct.id, {
@@ -285,14 +285,6 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
             quantity: typeof variant.quantity === 'string' ? parseInt(variant.quantity, 10) || 0 : variant.quantity
           })
         }
-      } else {
-        // Create a default variant so the product can be ordered
-        await adminApi.createVariant(newProduct.id, {
-          size: null,
-          color: null,
-          credits_modifier: 0,
-          quantity: 0
-        })
       }
       toast.success('Product created successfully!')
       onSuccess()
