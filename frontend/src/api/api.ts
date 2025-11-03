@@ -79,20 +79,14 @@ export const orderApi = {
 export const adminApi = {
   // Products
   createProduct: async (formData: FormData) => {
-    const response = await apiClient.post('/api/admin/products', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    // Don't set Content-Type header - let the browser set it automatically with the boundary
+    const response = await apiClient.post('/api/admin/products', formData)
     return response.data
   },
   
   updateProduct: async (productId: number, formData: FormData) => {
-    const response = await apiClient.put(`/api/admin/products/${productId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    // Don't set Content-Type header - let the browser set it automatically with the boundary
+    const response = await apiClient.put(`/api/admin/products/${productId}`, formData)
     return response.data
   },
   
