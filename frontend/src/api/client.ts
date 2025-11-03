@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+// Use ?? instead of || to allow empty string in production (for relative paths)
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -16,6 +17,13 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    
+    // If the data is FormData, remove Content-Type header
+    // Let the browser set it automatically with the boundary
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type']
+    }
+    
     return config
   },
   (error) => {

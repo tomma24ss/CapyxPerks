@@ -265,33 +265,54 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const formDataToSend = new FormData()
-      formDataToSend.append('name', formData.name)
-      formDataToSend.append('description', formData.description || '')
-      formDataToSend.append('base_credits', formData.base_credits.toString())
-      if (imageFile) {
-        formDataToSend.append('image', imageFile)
+      try {
+        const formDataToSend = new FormData()
+        formDataToSend.append('name', formData.name)
+        formDataToSend.append('description', formData.description || '')
+        formDataToSend.append('base_credits', formData.base_credits.toString())
+        if (imageFile) {
+          formDataToSend.append('image', imageFile)
+        }
+        console.log('Creating product with data:', {
+          name: formData.name,
+          description: formData.description,
+          base_credits: formData.base_credits,
+          hasImage: !!imageFile
+        })
+        return await adminApi.createProduct(formDataToSend)
+      } catch (error) {
+        console.error('Error in createProduct mutation:', error)
+        throw error
       }
-      return adminApi.createProduct(formDataToSend)
     },
     onSuccess: async (newProduct) => {
-      // Create variants if any
-      if (variants.length > 0) {
-        for (const variant of variants) {
-          await adminApi.createVariant(newProduct.id, {
-            size: variant.size || null,
-            color: variant.color || null,
-            credits_modifier: typeof variant.credits_modifier === 'string' ? parseFloat(variant.credits_modifier) || 0 : variant.credits_modifier,
-            quantity: typeof variant.quantity === 'string' ? parseInt(variant.quantity, 10) || 0 : variant.quantity
-          })
+      try {
+        console.log('Product created:', newProduct)
+        // Create variants if any
+        if (variants.length > 0) {
+          console.log('Creating variants:', variants.length)
+          for (const variant of variants) {
+            await adminApi.createVariant(newProduct.id, {
+              size: variant.size || null,
+              color: variant.color || null,
+              credits_modifier: typeof variant.credits_modifier === 'string' ? parseFloat(variant.credits_modifier) || 0 : variant.credits_modifier,
+              quantity: typeof variant.quantity === 'string' ? parseInt(variant.quantity, 10) || 0 : variant.quantity
+            })
+          }
         }
+        toast.success('Product created successfully!')
+        onSuccess()
+        onClose()
+      } catch (error) {
+        console.error('Error in onSuccess handler:', error)
+        toast.error('Product created but failed to add variants')
+        onClose()
       }
-      toast.success('Product created successfully!')
-      onSuccess()
-      onClose()
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.detail || 'Failed to create product')
+      console.error('Product creation error:', error)
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to create product'
+      toast.error(errorMessage)
     },
   })
 
@@ -340,10 +361,16 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (product) {
-      updateMutation.mutate()
-    } else {
-      createMutation.mutate()
+    console.log('Form submitted', { product, formData, hasImageFile: !!imageFile })
+    try {
+      if (product) {
+        updateMutation.mutate()
+      } else {
+        createMutation.mutate()
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      toast.error('Failed to submit form')
     }
   }
 
