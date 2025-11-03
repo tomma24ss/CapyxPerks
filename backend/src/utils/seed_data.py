@@ -6,20 +6,27 @@ from src.models import User, CreditLedger, UserRole, CreditType
 
 
 def seed_database():
-    """Create sample data for testing"""
+    """Create sample data for testing - Always clears and reseeds users"""
     db = SessionLocal()
     
     try:
         # Initialize tables
         init_db()
         
-        # Check if data already exists
+        # Always clear and reseed users to ensure consistency
         existing_users = db.query(User).count()
         if existing_users > 0:
-            print(f"Database already has {existing_users} users. Skipping seed.")
-            return
+            print(f"⚠️  Found {existing_users} existing users. Clearing for fresh seed...")
+            # Clear all existing data (in correct order to respect foreign keys)
+            from src.models import Order, OrderItem
+            db.query(OrderItem).delete()
+            db.query(CreditLedger).delete()
+            db.query(Order).delete()
+            db.query(User).delete()
+            db.commit()
+            print("✅ Existing data cleared.")
         
-        print("Seeding database...")
+        print("Seeding database with 4 users...")
         
         # Create sample users
         users = [
