@@ -22,7 +22,12 @@ The `init.sh` script tried to use the correct file, but had **mixed import paths
 - ✅ Removed `backend/seed_data.py` (only created 1 admin)
 - ✅ Kept `backend/src/utils/seed_data.py` (creates 4 users)
 
-### 2. Fixed init.sh Imports
+### 2. Always Clear and Reseed
+- ✅ Modified seed script to **always clear existing users** before reseeding
+- ✅ No more "skipping seed" - it always creates fresh 4 users
+- ✅ Tested locally - works perfectly!
+
+### 3. Fixed init.sh Imports
 Changed from mixed imports to consistent `src.` structure:
 
 **Before:**
