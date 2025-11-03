@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "========================================="
+echo "CAPYX PERKS - DATABASE INITIALIZATION"
+echo "========================================="
 echo "Waiting for PostgreSQL to start..."
 
 # Wait for PostgreSQL to be ready (up to 60 seconds)
@@ -36,11 +39,36 @@ done
 # Initialize database schema
 echo "Initializing database schema..."
 cd /app/backend
-python -c "from src.core.database import init_db; init_db()" 2>&1 || echo "Database schema initialization failed or already initialized"
+python -c "from src.models import User, CreditLedger, Order, OrderItem, Product, ProductVariant, InventoryLot; from src.core.database import init_db; init_db(); print('✅ Database schema initialized')" 2>&1
 
 # Seed database with 4 sample users (Laurie, Tomma, Guillaume, Tinael)
-echo "Seeding database with sample users..."
-python -c "from src.utils.seed_data import seed_database; seed_database()" 2>&1 || echo "Database seeding skipped or failed"
+# Force reseed on every startup since we don't have persistent storage
+echo "Force reseeding database (no persistent storage)..."
+python -c "
+from src.core.database import SessionLocal
+from src.models import User, CreditLedger, OrderItem, Order
 
-echo "Initialization complete!"
+# Clear existing data
+db = SessionLocal()
+try:
+    db.query(OrderItem).delete()
+    db.query(CreditLedger).delete()
+    db.query(Order).delete()
+    db.query(User).delete()
+    db.commit()
+    print('Cleared existing data')
+except Exception as e:
+    print(f'Error clearing data: {e}')
+    db.rollback()
+finally:
+    db.close()
+
+# Reseed
+from src.utils.seed_data import seed_database
+seed_database()
+" 2>&1
+
+echo "========================================="
+echo "✅ INITIALIZATION COMPLETE!"
+echo "========================================="
 
