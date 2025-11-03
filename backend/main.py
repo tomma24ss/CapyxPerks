@@ -40,10 +40,44 @@ app.add_middleware(
 # Initialize database on startup
 @app.on_event("startup")
 async def startup_event():
-    """Database already initialized by init-db script"""
-    # Note: init-db script handles database creation and seeding
-    # We don't call init_db() here to avoid connection/transaction issues
-    print("✅ Backend started (database already initialized by init-db)")
+    """Ensure database tables exist (idempotent operation)"""
+    from src.core.database import engine, SessionLocal
+    from src.models import User
+    import sqlalchemy
+    
+    # Debug: Check database connection
+    print(f"🔍 Database URL: {settings.database_url}")
+    print(f"🔍 Engine URL: {engine.url}")
+    
+    # Test connection and check current database
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(sqlalchemy.text("SELECT current_database()"))
+            current_db = result.scalar()
+            print(f"🔍 Connected to database: {current_db}")
+            
+            # Check if users table exists
+            result = conn.execute(sqlalchemy.text(
+                "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users')"
+            ))
+            table_exists = result.scalar()
+            print(f"🔍 Users table exists: {table_exists}")
+            
+            if table_exists:
+                # Count users
+                result = conn.execute(sqlalchemy.text("SELECT COUNT(*) FROM users"))
+                user_count = result.scalar()
+                print(f"🔍 Users in database: {user_count}")
+    except Exception as e:
+        print(f"❌ Database connection test failed: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    # Call init_db() to ensure tables exist
+    # This is idempotent - only creates tables if they don't exist
+    init_db()
+    print("✅ Database tables verified")
+    
     if settings.environment == "development":
         print("🔧 Running in DEVELOPMENT mode")
         print("📝 Dev login available at: POST /api/auth/dev/login")

@@ -72,7 +72,7 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy initialization and startup scripts
-# Cache bust: 2025-11-03-v11-remove-duplicate-init-db
+# Cache bust: 2025-11-03-v12-add-database-debug-logging
 COPY init.sh /app/init.sh
 COPY start-backend.sh /app/start-backend.sh
 RUN chmod +x /app/init.sh /app/start-backend.sh
