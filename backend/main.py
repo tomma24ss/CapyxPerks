@@ -93,7 +93,23 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy"}
+    from src.core.database import SessionLocal
+    from src.models import User
+    import os
+    
+    # Count users in database
+    db = SessionLocal()
+    try:
+        user_count = db.query(User).count()
+    finally:
+        db.close()
+    
+    return {
+        "status": "healthy",
+        "environment": settings.environment,
+        "hostname": os.getenv("HOSTNAME", "unknown"),
+        "user_count": user_count
+    }
 
 
 if __name__ == "__main__":

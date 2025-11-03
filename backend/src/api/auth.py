@@ -163,7 +163,7 @@ async def get_dev_users(db: Session = Depends(get_db)):
         )
     
     users = db.query(User).filter(User.is_active == True).all()
-    return [
+    result = [
         {
             "email": user.email,
             "name": user.name,
@@ -171,4 +171,15 @@ async def get_dev_users(db: Session = Depends(get_db)):
         }
         for user in users
     ]
+    
+    # Debug logging
+    print(f"🔍 /api/auth/dev/users called - Returning {len(result)} users")
+    if len(result) == 0:
+        print("⚠️  WARNING: No users found in database!")
+        total_users = db.query(User).count()
+        active_users = db.query(User).filter(User.is_active == True).count()
+        print(f"   Total users in DB: {total_users}")
+        print(f"   Active users in DB: {active_users}")
+    
+    return result
 
