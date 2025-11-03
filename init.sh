@@ -180,4 +180,8 @@ echo "  - Frontend: http://localhost (or your Koyeb URL)"
 echo "  - API: http://localhost/api (or your Koyeb URL/api)"
 echo "  - Dev Users API: http://localhost/api/auth/dev/users"
 echo "========================================="
+echo ""
+echo "Starting backend service..."
+supervisorctl start backend
+echo "✅ Backend service started"
 

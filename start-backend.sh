@@ -37,10 +37,8 @@ echo "SECRET_KEY: ${SECRET_KEY:0:10}... (truncated)"
 echo "========================================="
 echo ""
 
-# Wait for init-db to complete before starting backend
-echo "Waiting for init-db to complete database initialization..."
-echo "(Sleeping 15 seconds to give init-db time to create database and tables)"
-sleep 15
+# Backend is started by init-db after database initialization completes
+# No need to wait - database is guaranteed to be ready
 
 echo ""
 echo "Starting Uvicorn web server..."
