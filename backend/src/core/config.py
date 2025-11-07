@@ -21,6 +21,9 @@ class Settings:
     # Application
     environment: str = os.getenv("ENVIRONMENT", "development")
     cors_origins: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",")
+    
+    # Demo Password Protection
+    demo_password: str = os.getenv("DEMO_PASSWORD", "capyx2024")
 
 
 settings = Settings()

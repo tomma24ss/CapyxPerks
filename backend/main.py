@@ -10,7 +10,7 @@ from pathlib import Path
 
 from src.core.config import settings
 from src.core.database import init_db
-from src.api import auth, products, users, orders, admin
+from src.api import auth, products, users, orders, admin, demo
 
 # Create FastAPI application
 app = FastAPI(
@@ -94,6 +94,7 @@ app.include_router(products.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
 app.include_router(orders.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
+app.include_router(demo.router, prefix="/api")
 
 
 @app.get("/")

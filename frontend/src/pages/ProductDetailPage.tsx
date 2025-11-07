@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { productApi } from '../api/api'
 import { useCartStore } from '../store/cartStore'
 import toast from 'react-hot-toast'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getImageUrl } from '../utils/imageUtils'
 
 export default function ProductDetailPage() {
@@ -19,6 +19,13 @@ export default function ProductDetailPage() {
     enabled: !!id,
   })
 
+  // Auto-select variant if there's only one
+  useEffect(() => {
+    if (product && product.variants && product.variants.length === 1) {
+      setSelectedVariant(product.variants[0])
+    }
+  }, [product])
+
   if (isLoading) {
     return <div className="container mx-auto px-4 py-8">Loading...</div>
   }
@@ -29,7 +36,14 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!selectedVariant) {
-      toast.error('Please select a variant')
+      const variantCount = product.variants?.length || 0
+      if (variantCount > 1) {
+        toast.error('Please select a variant (size/color)')
+      } else if (variantCount === 0) {
+        toast.error('This product has no variants available')
+      } else {
+        toast.error('Unable to add to cart. Please try again.')
+      }
       return
     }
 
@@ -84,23 +98,29 @@ export default function ProductDetailPage() {
 
             {product.variants && product.variants.length > 0 && (
               <div className="mb-4 md:mb-6">
-                <h3 className="font-semibold mb-2 text-sm md:text-base">Variants:</h3>
+                <h3 className="font-semibold mb-2 text-sm md:text-base">
+                  {product.variants.length === 1 ? 'Variant:' : 'Select Variant:'}
+                </h3>
                 <div className="space-y-2">
                   {product.variants.map((variant) => (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariant(variant)}
+                      disabled={product.variants.length === 1}
                       className={`w-full text-left p-3 border rounded-lg text-sm md:text-base ${
                         selectedVariant?.id === variant.id
                           ? 'border-capyx-600 bg-capyx-50'
                           : 'border-gray-300 hover:border-capyx-400'
-                      }`}
+                      } ${product.variants.length === 1 ? 'cursor-default' : 'cursor-pointer'}`}
                     >
                       <div className="flex justify-between items-center flex-wrap gap-2">
-                        <span>
+                        <span className="flex items-center gap-2">
                           {variant.size && variant.color
                             ? `${variant.size} - ${variant.color}`
                             : variant.size || variant.color || 'Standard'}
+                          {product.variants.length === 1 && selectedVariant?.id === variant.id && (
+                            <span className="text-capyx-600 text-xs font-semibold">(Auto-selected)</span>
+                          )}
                         </span>
                         {variant.credits_modifier !== 0 && (
                           <span className="text-capyx-600 font-semibold">

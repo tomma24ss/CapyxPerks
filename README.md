@@ -4,6 +4,7 @@ A comprehensive platform where company employees can log in with their work emai
 
 ## Features
 
+- **Demo Password Gate**: Protect your demo site with a configurable password
 - **Azure AD Authentication**: Secure SSO login with work email
 - **Credit System**: Annual credit allocation based on employee role
 - **Product Catalog**: Browse and view company perks with variants (size, color)
@@ -86,13 +87,20 @@ CapyxPerks/
 
 3. **Set environment variables**
    
-   Create a `.env` file in the backend directory:
+   Create a `.env` file in the project root:
    ```env
+   # Demo Password (default: capyx2024)
+   DEMO_PASSWORD=capyx2024
+   
+   # Azure AD (optional - only for Azure AD authentication)
    AZURE_AD_CLIENT_ID=your-client-id
    AZURE_AD_CLIENT_SECRET=your-client-secret
    AZURE_AD_TENANT_ID=your-tenant-id
    AZURE_AD_AUTHORITY=https://login.microsoftonline.com/your-tenant-id
    ```
+   
+   📖 See [ENV_SETUP_GUIDE.md](ENV_SETUP_GUIDE.md) for detailed configuration options
+   📖 See [DEMO_PASSWORD_CONFIG.md](DEMO_PASSWORD_CONFIG.md) for demo password management
 
 4. **Start the services**
    ```bash
@@ -105,11 +113,16 @@ CapyxPerks/
    ```
 
 6. **Access the application**
-   - Frontend: http://localhost:3000
+   - Frontend: http://localhost:80 (or http://localhost:3001)
    - Backend API: http://localhost:8000
    - API Docs: http://localhost:8000/docs
+   
+   **Note:** On first access, you'll be prompted for the demo password (default: `capyx2024`)
 
 ## API Endpoints
+
+### Demo
+- `GET /api/demo/password` - Get demo password for access gate (public)
 
 ### Authentication
 - `GET /api/auth/azure` - Get Azure AD login URL

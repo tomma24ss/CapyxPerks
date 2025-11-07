@@ -1,9 +1,11 @@
 import axios from 'axios'
 
-// Use ?? instead of || to allow empty string in production (for relative paths)
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+// Use empty string for relative paths (proxied by nginx), or fallback for dev
+const API_BASE_URL = import.meta.env.VITE_API_URL !== undefined 
+  ? import.meta.env.VITE_API_URL 
+  : 'http://localhost:8000'
 
-console.log('API Client initialized with baseURL:', API_BASE_URL)
+console.log('API Client initialized with baseURL:', API_BASE_URL || '(relative paths)')
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

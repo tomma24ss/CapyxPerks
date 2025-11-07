@@ -11,7 +11,11 @@ RUN npm install
 # Copy source
 COPY . .
 
-# Build application
+# Accept build argument for API URL (empty string for relative paths)
+ARG VITE_API_URL=""
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build application - will use relative paths when VITE_API_URL is empty
 RUN npm run build
 
 # Production stage

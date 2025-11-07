@@ -1,0 +1,27 @@
+# VPS Deployment Note
+# For VPS deployment, we use docker-compose.yml only
+# These files are for Koyeb single-container deployment and can be ignored:
+
+# Koyeb deployment files
+Dockerfile
+init.sh
+start-backend.sh
+supervisord.conf
+nginx-production.conf
+test-deployment.sh
+
+# Koyeb documentation
+DEPLOY_INSTRUCTIONS.md
+DEPLOY_NOW.md
+KOYEB_DEPLOYMENT_GUIDE.md
+KOYEB_PERSISTENT_STORAGE_FIX.md
+DATABASE_CONNECTION_FIX.md
+DEBUG_FRONTEND.md
+DUPLICATE_INIT_DB_FIX.md
+FINAL_FIX_RACE_CONDITION.md
+FIX_SUMMARY.md
+QUICK_FIX_GUIDE.md
+RACE_CONDITION_FIX.md
+SUPERVISORCTL_FIX.md
+USER_SEEDING_COMPLETE_FIX.md
+
