@@ -15,7 +15,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout()
-    navigate('/dev-login')
+    navigate('/login')
     setMobileMenuOpen(false)
   }
 
@@ -24,7 +24,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-gray-900 text-white fixed w-full top-0 z-50 shadow-lg border-b-4 border-capyx-500">
+    <nav className="bg-capyx-500 text-black fixed w-full top-0 z-50 shadow-lg">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -34,16 +34,16 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-6">
-            <Link to="/" className="hover:text-capyx-400 transition-colors">
+            <Link to="/" className="hover:text-gray-700 transition-colors font-medium">
               Home
             </Link>
             {user?.role === 'admin' && (
-              <Link to="/admin" className="hover:text-capyx-400 transition-colors">
+              <Link to="/admin" className="hover:text-gray-700 transition-colors font-medium">
                 Admin
               </Link>
             )}
-            <div className="flex items-center space-x-2 bg-capyx-500/10 px-4 py-2 rounded-lg border border-capyx-500/30">
-              <svg className="w-5 h-5 text-capyx-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center space-x-2 bg-black/10 px-4 py-2 rounded-lg border border-black/30">
+              <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
                 <path
                   fillRule="evenodd"
@@ -51,24 +51,24 @@ export default function Navbar() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="font-semibold text-capyx-400">{balance?.balance.toFixed(2) || '0.00'}</span>
-              <span className="text-gray-400 text-sm">Credits</span>
+              <span className="font-semibold text-black">{balance?.balance.toFixed(2) || '0.00'}</span>
+              <span className="text-gray-700 text-sm">CapyCoins</span>
             </div>
-            <Link to="/cart" className="relative hover:text-capyx-400 transition-colors flex items-center gap-2">
+            <Link to="/cart" className="relative hover:text-gray-700 transition-colors flex items-center gap-2 font-medium">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               <span className="font-medium">Cart</span>
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-capyx-500 text-gray-900 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                <span className="absolute -top-2 -right-2 bg-black text-capyx-500 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
                   {cartItemCount}
                 </span>
               )}
             </Link>
-            <Link to="/profile" className="hover:text-capyx-400 transition-colors">
+            <Link to="/profile" className="hover:text-gray-700 transition-colors font-medium">
               Profile
             </Link>
-            <button onClick={handleLogout} className="hover:text-capyx-400 transition-colors">
+            <button onClick={handleLogout} className="hover:text-gray-700 transition-colors font-medium">
               Logout
             </button>
           </div>
@@ -76,8 +76,8 @@ export default function Navbar() {
           {/* Mobile: Credits & Cart & Hamburger */}
           <div className="flex lg:hidden items-center space-x-3">
             {/* Credits Badge - Mobile */}
-            <div className="flex items-center space-x-1 bg-capyx-500/10 px-2 py-1 rounded-lg border border-capyx-500/30">
-              <svg className="w-4 h-4 text-capyx-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center space-x-1 bg-black/10 px-2 py-1 rounded-lg border border-black/30">
+              <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
                 <path
                   fillRule="evenodd"
@@ -85,16 +85,16 @@ export default function Navbar() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="font-semibold text-capyx-400 text-sm">{balance?.balance.toFixed(0) || '0'}</span>
+              <span className="font-semibold text-black text-sm">{balance?.balance.toFixed(0) || '0'}</span>
             </div>
 
             {/* Cart Icon - Mobile */}
-            <Link to="/cart" className="relative hover:text-capyx-400 transition-colors" onClick={closeMobileMenu}>
+            <Link to="/cart" className="relative hover:text-gray-700 transition-colors" onClick={closeMobileMenu}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-capyx-500 text-gray-900 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                <span className="absolute -top-2 -right-2 bg-black text-capyx-500 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
                   {cartItemCount}
                 </span>
               )}
@@ -103,7 +103,7 @@ export default function Navbar() {
             {/* Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-black/10 rounded-lg transition-colors"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -121,11 +121,11 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-700 pt-4">
+          <div className="lg:hidden mt-4 pb-4 border-t border-black/30 pt-4">
             <div className="flex flex-col space-y-3">
               <Link
                 to="/"
-                className="hover:text-capyx-400 transition-colors py-2 px-3 hover:bg-gray-800 rounded-lg"
+                className="hover:text-gray-700 transition-colors py-2 px-3 hover:bg-black/10 rounded-lg font-medium"
                 onClick={closeMobileMenu}
               >
                 Home
@@ -133,7 +133,7 @@ export default function Navbar() {
               {user?.role === 'admin' && (
                 <Link
                   to="/admin"
-                  className="hover:text-capyx-400 transition-colors py-2 px-3 hover:bg-gray-800 rounded-lg"
+                  className="hover:text-gray-700 transition-colors py-2 px-3 hover:bg-black/10 rounded-lg font-medium"
                   onClick={closeMobileMenu}
                 >
                   Admin
@@ -141,14 +141,14 @@ export default function Navbar() {
               )}
               <Link
                 to="/profile"
-                className="hover:text-capyx-400 transition-colors py-2 px-3 hover:bg-gray-800 rounded-lg"
+                className="hover:text-gray-700 transition-colors py-2 px-3 hover:bg-black/10 rounded-lg font-medium"
                 onClick={closeMobileMenu}
               >
                 Profile
               </Link>
               <button
                 onClick={handleLogout}
-                className="text-left hover:text-capyx-400 transition-colors py-2 px-3 hover:bg-gray-800 rounded-lg"
+                className="text-left hover:text-gray-700 transition-colors py-2 px-3 hover:bg-black/10 rounded-lg font-medium"
               >
                 Logout
               </button>

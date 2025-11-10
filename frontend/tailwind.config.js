@@ -12,9 +12,9 @@ export default {
           100: '#fffcd6',
           200: '#fff9ad',
           300: '#fff684',
-          400: '#ffd616',  // Primary yellow - User specified
-          500: '#ffd616',  // Primary yellow - User specified
-          600: '#e6c100',
+          400: '#fed714',  // Primary yellow - #fed714
+          500: '#fed714',  // Primary yellow - #fed714
+          600: '#e5c213',
           700: '#b39700',
           800: '#806d00',
           900: '#4d4200',

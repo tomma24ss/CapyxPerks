@@ -9,7 +9,6 @@ import CheckoutPage from './pages/CheckoutPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminDashboard from './pages/AdminDashboard'
 import LoginPage from './pages/LoginPage'
-import DevLoginPage from './pages/DevLoginPage'
 import { useAuthStore } from './store/authStore'
 import ProtectedRoute from './components/ProtectedRoute'
 import DemoPasswordGate from './components/DemoPasswordGate'
@@ -24,11 +23,10 @@ function App() {
 
   return (
     <DemoPasswordGate>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         {isAuthenticated && <Navbar />}
         <main className={isAuthenticated ? 'pt-16' : ''}>
           <Routes>
-            <Route path="/dev-login" element={<DevLoginPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route
               path="/"

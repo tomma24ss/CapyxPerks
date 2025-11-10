@@ -9,7 +9,7 @@ from src.core.security import get_admin_user
 from src.models import User, Product, ProductVariant, InventoryLot, Order, CreditLedger
 from src.schemas.schemas import (
     UserResponse, ProductResponse, VariantResponse, OrderResponse,
-    CreditGrant, UserImport, ProductCreate, ProductUpdate, CreditLedgerResponse,
+    CreditGrant, BulkCreditGrant, UserImport, ProductCreate, ProductUpdate, CreditLedgerResponse,
     VariantCreate, VariantUpdate, VariantWithInventory, OrderWithUserResponse,
     OrderItemWithDetails
 )
@@ -98,18 +98,72 @@ async def delete_product(
     admin_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """Delete a product (admin only)"""
+    """Delete a product and all related data including order history (admin only)"""
+    from src.models import OrderItem
+    
     db_product = db.query(Product).filter(Product.id == product_id).first()
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Get all variant IDs for this product
+    variant_ids = [variant.id for variant in db_product.variants]
+    
+    if variant_ids:
+        # Find all orders that contain these variants
+        affected_order_ids = db.query(OrderItem.order_id).filter(
+            OrderItem.variant_id.in_(variant_ids)
+        ).distinct().all()
+        affected_order_ids = [order_id[0] for order_id in affected_order_ids]
+        
+        # Delete all order items that reference these variants
+        db.query(OrderItem).filter(OrderItem.variant_id.in_(variant_ids)).delete(synchronize_session=False)
+        
+        # Delete orders that now have no items left
+        if affected_order_ids:
+            for order_id in affected_order_ids:
+                remaining_items = db.query(OrderItem).filter(OrderItem.order_id == order_id).count()
+                if remaining_items == 0:
+                    # Order has no items left, delete it
+                    order = db.query(Order).filter(Order.id == order_id).first()
+                    if order:
+                        # Also delete any credit ledger entries associated with this order
+                        db.query(CreditLedger).filter(CreditLedger.reference_order_id == order_id).delete(synchronize_session=False)
+                        db.delete(order)
     
     # Delete associated image if exists
     if db_product.image_url:
         delete_file(db_product.image_url)
     
+    # Delete the product (will cascade delete variants and inventory lots)
     db.delete(db_product)
     db.commit()
-    return {"message": "Product deleted successfully"}
+    return {"message": "Product and all related data deleted successfully"}
+
+
+@router.post("/orders/cleanup-empty")
+async def cleanup_empty_orders(
+    admin_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """Clean up orders that have no items (admin only) - one-time cleanup utility"""
+    from src.models import OrderItem
+    
+    # Find all orders
+    all_orders = db.query(Order).all()
+    deleted_count = 0
+    
+    for order in all_orders:
+        # Check if order has any items
+        item_count = db.query(OrderItem).filter(OrderItem.order_id == order.id).count()
+        if item_count == 0:
+            # Delete credit ledger entries associated with this order
+            db.query(CreditLedger).filter(CreditLedger.reference_order_id == order.id).delete(synchronize_session=False)
+            # Delete the empty order
+            db.delete(order)
+            deleted_count += 1
+    
+    db.commit()
+    return {"message": f"Cleaned up {deleted_count} empty order(s)", "deleted_count": deleted_count}
 
 
 @router.post("/products/{product_id}/variants", response_model=VariantResponse)
@@ -283,6 +337,47 @@ async def grant_credits_admin(
     return {"message": "Credits granted", "ledger_entry_id": ledger_entry.id}
 
 
+@router.post("/credits/bulk-grant")
+async def bulk_grant_credits_admin(
+    grant_data: BulkCreditGrant,
+    admin_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """Grant CapyCoins to multiple users at once (admin only)"""
+    ledger_entries = []
+    successful_users = []
+    failed_users = []
+    
+    for user_id in grant_data.user_ids:
+        try:
+            # Verify user exists
+            user = db.query(User).filter(User.id == user_id).first()
+            if not user:
+                failed_users.append({"user_id": user_id, "reason": "User not found"})
+                continue
+            
+            # Grant CapyCoins
+            ledger_entry = grant_credits(
+                db,
+                user_id,
+                grant_data.amount,
+                grant_data.description
+            )
+            ledger_entries.append(ledger_entry.id)
+            successful_users.append({"user_id": user_id, "user_name": user.name})
+        except Exception as e:
+            failed_users.append({"user_id": user_id, "reason": str(e)})
+    
+    return {
+        "message": f"CapyCoins granted to {len(successful_users)} user(s)",
+        "successful_count": len(successful_users),
+        "failed_count": len(failed_users),
+        "successful_users": successful_users,
+        "failed_users": failed_users,
+        "ledger_entry_ids": ledger_entries
+    }
+
+
 @router.post("/users/import")
 async def import_users(
     users_data: List[dict],
@@ -367,16 +462,16 @@ async def get_all_orders(
     return enriched_orders
 
 
-@router.get("/orders/pending", response_model=List[OrderWithUserResponse])
-async def get_pending_orders(
+@router.get("/orders/processing", response_model=List[OrderWithUserResponse])
+async def get_processing_orders(
     admin_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """Get all pending orders with user and product details (admin only)"""
+    """Get all processing (approved, awaiting fulfillment) orders with user and product details (admin only)"""
     from src.models import OrderStatus, Product, ProductVariant
     
     orders = db.query(Order).filter(
-        Order.status == OrderStatus.PENDING
+        Order.status == OrderStatus.PROCESSING
     ).order_by(Order.created_at.desc()).all()
     
     # Enrich orders with user and product details
@@ -420,18 +515,28 @@ async def get_pending_orders(
     return enriched_orders
 
 
-@router.post("/orders/{order_id}/approve", response_model=OrderWithUserResponse)
-async def approve_order_endpoint(
+# Backwards compatibility - redirect old pending endpoint to processing
+@router.get("/orders/pending", response_model=List[OrderWithUserResponse])
+async def get_pending_orders(
+    admin_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """DEPRECATED: Use /orders/processing instead. Get all pending orders (admin only)"""
+    return await get_processing_orders(admin_user, db)
+
+
+@router.post("/orders/{order_id}/fulfill", response_model=OrderWithUserResponse)
+async def fulfill_order_endpoint(
     order_id: int,
     admin_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """Approve a pending order - deducts credits and inventory (admin only)"""
-    from src.services.order_service import approve_order
+    """Fulfill an approved order - deducts inventory and marks as completed (admin only)"""
+    from src.services.order_service import fulfill_order
     from src.models import Product, ProductVariant
     
     try:
-        order = approve_order(db, order_id)
+        order = fulfill_order(db, order_id)
         
         # Enrich with user and product details
         order_dict = {
@@ -471,6 +576,34 @@ async def approve_order_endpoint(
         raise HTTPException(status_code=400, detail=str(e))
 
 
+# Backwards compatibility - redirect old approve endpoint to fulfill
+@router.post("/orders/{order_id}/approve", response_model=OrderWithUserResponse)
+async def approve_order_endpoint(
+    order_id: int,
+    admin_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """DEPRECATED: Use /fulfill instead. Approve a pending order - deducts credits and inventory (admin only)"""
+    return await fulfill_order_endpoint(order_id, admin_user, db)
+
+
+@router.post("/orders/{order_id}/deny")
+async def deny_order_endpoint(
+    order_id: int,
+    reason: Optional[str] = None,
+    admin_user: User = Depends(get_admin_user),
+    db: Session = Depends(get_db)
+):
+    """Deny an approved order - releases reserved inventory and refunds credits (admin only)"""
+    from src.services.order_service import deny_order
+    try:
+        order = deny_order(db, order_id, reason)
+        return {"message": "Order denied", "order_id": order_id, "status": order.status}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# Backwards compatibility - redirect old reject endpoint to deny
 @router.post("/orders/{order_id}/reject")
 async def reject_order_endpoint(
     order_id: int,
@@ -478,13 +611,8 @@ async def reject_order_endpoint(
     admin_user: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
-    """Reject a pending order - releases reserved inventory (admin only)"""
-    from src.services.order_service import reject_order
-    try:
-        order = reject_order(db, order_id, reason)
-        return {"message": "Order rejected", "order_id": order_id, "status": order.status}
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    """DEPRECATED: Use /deny instead. Reject a pending order - releases reserved inventory (admin only)"""
+    return await deny_order_endpoint(order_id, reason, admin_user, db)
 
 
 @router.get("/users/{user_id}/balance")

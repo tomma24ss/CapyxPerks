@@ -47,18 +47,18 @@ export default function ProfilePage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
-          <h2 className="text-lg md:text-xl font-semibold mb-4">Credit Balance</h2>
+          <h2 className="text-lg md:text-xl font-semibold mb-4">CapyCoin Balance</h2>
           <div className="text-center py-4">
-            <p className="text-3xl md:text-4xl font-bold text-blue-600 mb-2">
+            <p className="text-3xl md:text-4xl font-bold text-capyx-600 mb-2">
               {balance?.balance.toFixed(2) || '0.00'}
             </p>
-            <p className="text-gray-600 text-sm md:text-base">Credits Available</p>
+            <p className="text-gray-600 text-sm md:text-base">CapyCoins Available</p>
           </div>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mt-6">
-        <h2 className="text-lg md:text-xl font-semibold mb-4">Credit Ledger</h2>
+        <h2 className="text-lg md:text-xl font-semibold mb-4">CapyCoin Ledger</h2>
         {ledger && ledger.length > 0 ? (
           <>
             {/* Desktop Table View */}

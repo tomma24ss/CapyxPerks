@@ -80,7 +80,8 @@ async def startup_event():
     
     if settings.environment == "development":
         print("🔧 Running in DEVELOPMENT mode")
-        print("📝 Dev login available at: POST /api/auth/dev/login")
+        print("📝 Login with mock accounts at: POST /api/auth/login")
+        print("📝 Mock users available at: GET /api/auth/mock-users")
 
 
 # Mount static files for uploads

@@ -46,7 +46,7 @@ export default function CartPage() {
                   </p>
                 )}
                 <p className="text-capyx-600 font-semibold mt-1 text-sm md:text-base">
-                  {item.credits.toFixed(2)} Credits × {item.quantity}
+                  {item.credits.toFixed(2)} CapyCoins × {item.quantity}
                 </p>
               </div>
               <div className="flex items-center justify-between md:justify-end gap-4">
@@ -82,12 +82,12 @@ export default function CartPage() {
           <div className="flex justify-between items-center text-base md:text-lg">
             <span className="font-semibold">Total:</span>
             <span className="text-xl md:text-2xl font-bold text-capyx-600">
-              {totalCredits.toFixed(2)} Credits
+              {totalCredits.toFixed(2)} CapyCoins
             </span>
           </div>
           {balance && (
             <div className="flex justify-between text-sm text-gray-600">
-              <span>Available Credits:</span>
+              <span>Available CapyCoins:</span>
               <span>{balance.balance.toFixed(2)}</span>
             </div>
           )}
@@ -106,7 +106,7 @@ export default function CartPage() {
                 if (canCheckout) {
                   navigate('/checkout')
                 } else {
-                  toast.error('Insufficient credits')
+                  toast.error('Insufficient capycoins')
                 }
               }}
               disabled={!canCheckout}

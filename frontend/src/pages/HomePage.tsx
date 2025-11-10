@@ -23,7 +23,7 @@ export default function HomePage() {
         <h1 className="text-4xl font-bold text-gray-900 mb-2">
           <span className="text-capyx-600">Capyx</span> Company Perks
         </h1>
-        <p className="text-gray-600">Redeem your credits for amazing company goodies!</p>
+        <p className="text-gray-600">Redeem your capycoins for amazing company goodies!</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -53,7 +53,7 @@ export default function HomePage() {
               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold text-capyx-600">
-                  {product.base_credits.toFixed(2)} Credits
+                  {product.base_credits.toFixed(2)} CapyCoins
                 </span>
                 <span className="text-capyx-600 hover:text-capyx-700 font-medium">
                   View Details →

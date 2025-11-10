@@ -71,7 +71,7 @@ export default function ProductDetailPage() {
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 h-64 md:h-96 bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center">
+          <div className="w-full md:w-1/2 h-64 md:h-96 bg-gradient-to-br from-capyx-400 to-capyx-600 flex items-center justify-center">
             {getImageUrl(product.image_url) ? (
               <img 
                 src={getImageUrl(product.image_url)!} 
@@ -92,7 +92,7 @@ export default function ProductDetailPage() {
 
             <div className="mb-4 md:mb-6">
               <span className="text-3xl md:text-4xl font-bold text-capyx-600">
-                {product.base_credits.toFixed(2)} Credits
+                {product.base_credits.toFixed(2)} CapyCoins
               </span>
             </div>
 
@@ -125,7 +125,7 @@ export default function ProductDetailPage() {
                         {variant.credits_modifier !== 0 && (
                           <span className="text-capyx-600 font-semibold">
                             {variant.credits_modifier > 0 ? '+' : ''}
-                            {variant.credits_modifier.toFixed(2)} Credits
+                            {variant.credits_modifier.toFixed(2)} CapyCoins
                           </span>
                         )}
                       </div>

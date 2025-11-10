@@ -1,18 +1,18 @@
 # CapyxPerks - Employee Benefits Platform
 
-A comprehensive platform where company employees can log in with their work email, receive yearly credits, and redeem them for company goodies like shirts, bags, mugs, etc.
+A comprehensive platform where company employees can log in with their work email, receive yearly capycoins, and redeem them for company goodies like shirts, bags, mugs, etc.
 
 ## Features
 
 - **Demo Password Gate**: Protect your demo site with a configurable password
 - **Azure AD Authentication**: Secure SSO login with work email
-- **Credit System**: Annual credit allocation based on employee role
+- **CapyCoin System**: Annual capycoin allocation based on employee role
 - **Product Catalog**: Browse and view company perks with variants (size, color)
 - **Shopping Cart**: Add products to cart and manage quantities
-- **Order Processing**: Complete checkout with credit deduction
-- **Admin Dashboard**: Manage products, inventory, users, and credits
+- **Order Processing**: Complete checkout with capycoin deduction
+- **Admin Dashboard**: Manage products, inventory, users, and capycoins
 - **Redis Sessions**: Fast session management and cart caching
-- **Real-time Balance**: Live credit balance updates
+- **Real-time Balance**: Live capycoin balance updates
 
 ## Tech Stack
 
@@ -130,8 +130,8 @@ CapyxPerks/
 
 ### User
 - `GET /api/me` - Get current user profile
-- `GET /api/credits/balance` - Get credit balance
-- `GET /api/credits/ledger` - Get credit transaction history
+- `GET /api/credits/balance` - Get capycoin balance
+- `GET /api/credits/ledger` - Get capycoin transaction history
 
 ### Products
 - `GET /api/products` - List all products
@@ -147,29 +147,29 @@ CapyxPerks/
 - `POST /api/admin/products` - Create product (admin only)
 - `POST /api/admin/products/:id/variants` - Add variant (admin only)
 - `POST /api/admin/products/:id/variants/:vid/inventory` - Update inventory (admin only)
-- `POST /api/admin/credits/grant` - Grant credits (admin only)
+- `POST /api/admin/credits/grant` - Grant capycoins (admin only)
 - `POST /api/admin/users/import` - Import users (admin only)
 - `GET /api/admin/users` - Get all users (admin only)
 - `GET /api/admin/orders` - Get all orders (admin only)
 
-## Credit System
+## CapyCoin System
 
-### Credit Allocation
-- **Intern**: 100 credits/year
-- **Employee**: 200 credits/year
-- **Senior**: 300 credits/year
-- **Admin**: 1000 credits/year
+### CapyCoin Allocation
+- **Intern**: 100 capycoins/year
+- **Employee**: 200 capycoins/year
+- **Senior**: 300 capycoins/year
+- **Admin**: 1000 capycoins/year
 
-### Credit Types
-- `GRANT`: Credits added to account
-- `DEBIT`: Credits deducted from account
-- `ADJUST`: Credits adjusted by admin
+### CapyCoin Types
+- `GRANT`: CapyCoins added to account
+- `DEBIT`: CapyCoins deducted from account
+- `ADJUST`: CapyCoins adjusted by admin
 
 ## Database Schema
 
 ### Core Tables
 - `users` - User accounts
-- `credit_ledger` - All credit transactions
+- `credit_ledger` - All capycoin transactions
 - `products` - Product catalog
 - `product_variants` - Product variants (size, color)
 - `inventory_lots` - Inventory tracking

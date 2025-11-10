@@ -37,14 +37,14 @@ function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
   const grantCreditsMutation = useMutation({
     mutationFn: () => adminApi.grantCredits(user.id, parseFloat(grantAmount), grantDescription),
     onSuccess: () => {
-      toast.success('Credits granted successfully!')
+      toast.success('CapyCoins granted successfully!')
       queryClient.invalidateQueries({ queryKey: ['admin', 'user-balance', user.id] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'user-ledger', user.id] })
       setGrantAmount('')
       setGrantDescription('')
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.detail || 'Failed to grant credits')
+      toast.error(error.response?.data?.detail || 'Failed to grant capycoins')
     },
   })
 
@@ -67,16 +67,16 @@ function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Credit Balance */}
+          {/* CapyCoin Balance */}
           <div className="bg-gradient-to-br from-capyx-400 to-capyx-600 rounded-lg p-6 text-gray-900">
             <div className="text-sm font-medium mb-1">Current Balance</div>
             <div className="text-4xl font-bold">{balance?.balance?.toFixed(2) || '0.00'}</div>
-            <div className="text-sm mt-1">Credits</div>
+            <div className="text-sm mt-1">CapyCoins</div>
           </div>
 
-          {/* Grant Credits Form */}
+          {/* Grant CapyCoins Form */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-semibold mb-3">Grant Credits</h3>
+            <h3 className="font-semibold mb-3">Grant CapyCoins</h3>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <input
@@ -100,14 +100,14 @@ function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
                 disabled={!grantAmount || !grantDescription || grantCreditsMutation.isPending}
                 className="w-full bg-capyx-500 hover:bg-capyx-600 disabled:bg-gray-300 text-gray-900 font-semibold py-2 rounded-lg transition-colors"
               >
-                {grantCreditsMutation.isPending ? 'Granting...' : 'Grant Credits'}
+                {grantCreditsMutation.isPending ? 'Granting...' : 'Grant CapyCoins'}
               </button>
             </div>
           </div>
 
-          {/* Credit Ledger */}
+          {/* CapyCoin Ledger */}
           <div>
-            <h3 className="font-semibold mb-3">Credit History</h3>
+            <h3 className="font-semibold mb-3">CapyCoin History</h3>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {ledger?.map((entry: any) => (
                 <div key={entry.id} className="flex justify-between items-center p-3 bg-gray-50 rounded border border-gray-200">
@@ -123,7 +123,7 @@ function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
                 </div>
               ))}
               {ledger?.length === 0 && (
-                <div className="text-center py-4 text-gray-500">No credit history</div>
+                <div className="text-center py-4 text-gray-500">No capycoin history</div>
               )}
             </div>
           </div>
@@ -143,7 +143,7 @@ function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-capyx-600">
-                        {order.total_credits.toFixed(2)} Credits
+                        {order.total_credits.toFixed(2)} CapyCoins
                       </div>
                       <span className={`text-xs px-2 py-1 rounded ${
                         order.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -156,7 +156,7 @@ function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
                     <div className="mt-2 space-y-1">
                       {order.items.map((item: any) => (
                         <div key={item.id} className="text-sm text-gray-600">
-                          {item.quantity}x - {item.unit_credits} credits each
+                          {item.quantity}x - {item.unit_credits} capycoins each
                         </div>
                       ))}
                     </div>
@@ -409,7 +409,7 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Credits</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">CapyCoins</label>
             <input
               type="number"
               required
@@ -457,7 +457,7 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
                       <div className="flex-1 grid grid-cols-4 gap-2 text-sm">
                         <div><span className="font-medium">Size:</span> {variant.size || 'N/A'}</div>
                         <div><span className="font-medium">Color:</span> {variant.color || 'N/A'}</div>
-                        <div><span className="font-medium">Credits:</span> +{variant.credits_modifier}</div>
+                        <div><span className="font-medium">CapyCoins:</span> +{variant.credits_modifier}</div>
                         <div><span className="font-medium">Qty:</span> {variant.quantity || 0}</div>
                       </div>
                       <button
@@ -498,7 +498,7 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Extra Credits</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Extra CapyCoins</label>
                     <input
                       type="number"
                       step="0.01"
@@ -547,7 +547,7 @@ function ProductModal({ product, isOpen, onClose, onSuccess }: ProductModalProps
                     <h4 className="text-sm font-semibold text-blue-900 mb-1">Variant Management</h4>
                     <p className="text-sm text-blue-800">
                       To manage variants and stock levels, please use the <strong>Inventory</strong> tab. 
-                      Product editing only allows changes to name, description, credits, and images.
+                      Product editing only allows changes to name, description, capycoins, and images.
                     </p>
                   </div>
                 </div>
@@ -742,7 +742,7 @@ function InventoryManagementTab({
                   <p className="text-sm text-gray-600 mt-1">{product.description}</p>
                   <div className="flex items-center gap-4 mt-3">
                     <span className="text-sm text-gray-700">
-                      <span className="font-semibold">Base Price:</span> {product.base_credits} Credits
+                      <span className="font-semibold">Base Price:</span> {product.base_credits} CapyCoins
                     </span>
                     <span className="text-sm text-gray-700">
                       <span className="font-semibold">Variants:</span> {product.total_variants}
@@ -800,7 +800,7 @@ function InventoryManagementTab({
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                          {variant.credits_modifier > 0 ? `+${variant.credits_modifier}` : variant.credits_modifier} credits
+                          {variant.credits_modifier > 0 ? `+${variant.credits_modifier}` : variant.credits_modifier} capycoins
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {variant.total_stock}
@@ -866,7 +866,7 @@ function InventoryManagementTab({
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'order_requests' | 'orders' | 'users' | 'products' | 'inventory'>('order_requests')
+  const [activeTab, setActiveTab] = useState<'order_requests' | 'orders' | 'users' | 'products' | 'inventory' | 'bulk_credits'>('order_requests')
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const [productModalOpen, setProductModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<any>(null)
@@ -874,6 +874,10 @@ export default function AdminDashboard() {
   const [stockFilter, setStockFilter] = useState<'all' | 'in_stock' | 'low_stock' | 'out_of_stock'>('all')
   const [userSearchQuery, setUserSearchQuery] = useState('')
   const [orderSearchQuery, setOrderSearchQuery] = useState('')
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([])
+  const [bulkAmount, setBulkAmount] = useState('')
+  const [bulkDescription, setBulkDescription] = useState('')
+  const [bulkUserSearchQuery, setBulkUserSearchQuery] = useState('')
   const queryClient = useQueryClient()
 
   const { data: products, refetch: refetchProducts } = useQuery({
@@ -908,29 +912,29 @@ export default function AdminDashboard() {
     queryFn: () => adminApi.getUsers(),
   })
 
-  const approveOrderMutation = useMutation({
-    mutationFn: (orderId: number) => adminApi.approveOrder(orderId),
+  const fulfillOrderMutation = useMutation({
+    mutationFn: (orderId: number) => adminApi.fulfillOrder(orderId),
     onSuccess: () => {
-      toast.success('Order approved! Inventory deducted and order marked as fulfilled.')
+      toast.success('Order fulfilled! Inventory deducted and order marked as completed.')
       refetchPendingOrders()
       queryClient.invalidateQueries({ queryKey: ['admin', 'orders'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'inventory-overview'] })
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.detail || 'Failed to approve order')
+      toast.error(error.response?.data?.detail || 'Failed to fulfill order')
     },
   })
 
-  const rejectOrderMutation = useMutation({
-    mutationFn: ({ orderId, reason }: { orderId: number, reason?: string }) => adminApi.rejectOrder(orderId, reason),
+  const denyOrderMutation = useMutation({
+    mutationFn: ({ orderId, reason }: { orderId: number, reason?: string }) => adminApi.denyOrder(orderId, reason),
     onSuccess: () => {
-      toast.success('Order rejected. Credits refunded to user.')
+      toast.success('Order denied. CapyCoins refunded to user.')
       refetchPendingOrders()
       queryClient.invalidateQueries({ queryKey: ['admin', 'orders'] })
       queryClient.invalidateQueries({ queryKey: ['admin', 'inventory-overview'] })
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.detail || 'Failed to reject order')
+      toast.error(error.response?.data?.detail || 'Failed to deny order')
     },
   })
 
@@ -942,6 +946,25 @@ export default function AdminDashboard() {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.detail || 'Failed to delete product')
+    },
+  })
+
+  const bulkGrantCreditsMutation = useMutation({
+    mutationFn: ({ userIds, amount, description }: { userIds: number[], amount: number, description: string }) => 
+      adminApi.bulkGrantCredits(userIds, amount, description),
+    onSuccess: (data) => {
+      if (data.failed_count > 0) {
+        toast.success(`CapyCoins ${bulkAmount.startsWith('-') ? 'deducted from' : 'granted to'} ${data.successful_count} user(s). ${data.failed_count} failed.`)
+      } else {
+        toast.success(`CapyCoins ${bulkAmount.startsWith('-') ? 'deducted from' : 'granted to'} ${data.successful_count} user(s) successfully!`)
+      }
+      setSelectedUserIds([])
+      setBulkAmount('')
+      setBulkDescription('')
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] })
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.detail || 'Failed to grant CapyCoins')
     },
   })
 
@@ -1019,8 +1042,8 @@ export default function AdminDashboard() {
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
-              <span className="hidden sm:inline">Order Requests</span>
-              <span className="sm:hidden">Requests</span> ({pendingOrders?.length || 0})
+              <span className="hidden sm:inline">Awaiting Fulfillment</span>
+              <span className="sm:hidden">Fulfillment</span> ({pendingOrders?.length || 0})
               {pendingOrders && pendingOrders.length > 0 && (
                 <span className="absolute -top-1 -right-2 bg-capyx-500 text-gray-900 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                   {pendingOrders.length}
@@ -1072,6 +1095,16 @@ export default function AdminDashboard() {
                 </span>
               )}
             </button>
+            <button
+              onClick={() => setActiveTab('bulk_credits')}
+              className={`py-4 border-b-2 font-medium whitespace-nowrap text-sm md:text-base flex-shrink-0 ${
+                activeTab === 'bulk_credits'
+                  ? 'border-capyx-600 text-capyx-600'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <span className="hidden sm:inline">Bulk </span>CapyCoins
+            </button>
           </div>
         </div>
 
@@ -1080,7 +1113,7 @@ export default function AdminDashboard() {
           {activeTab === 'order_requests' && (
             <div>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-lg md:text-xl font-semibold">Pending Order Requests</h2>
+                <h2 className="text-lg md:text-xl font-semibold">Orders Awaiting Fulfillment</h2>
                 <button
                   onClick={() => refetchPendingOrders()}
                   className="flex items-center justify-center gap-2 px-4 py-2 border border-capyx-300 rounded-lg hover:bg-capyx-50 text-capyx-700 text-sm w-full sm:w-auto"
@@ -1101,8 +1134,8 @@ export default function AdminDashboard() {
                           <div>
                             <div className="flex items-center gap-3">
                               <h3 className="text-lg font-bold text-gray-900">Order #{order.id}</h3>
-                              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
-                                PENDING APPROVAL
+                              <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                                APPROVED - AWAITING FULFILLMENT
                               </span>
                             </div>
                           <p className="text-sm text-gray-600 mt-1">
@@ -1113,7 +1146,7 @@ export default function AdminDashboard() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-capyx-600">{order.total_credits.toFixed(2)} Credits</p>
+                            <p className="text-2xl font-bold text-capyx-600">{order.total_credits.toFixed(2)} CapyCoins</p>
                             <p className="text-xs text-gray-600 mt-1">Total Cost</p>
                           </div>
                         </div>
@@ -1136,7 +1169,7 @@ export default function AdminDashboard() {
                                 <p className="text-xs text-gray-600">Quantity: {item.quantity}</p>
                               </div>
                               <div className="text-right">
-                                <p className="font-semibold text-capyx-600">{item.total_credits.toFixed(2)} Credits</p>
+                                <p className="font-semibold text-capyx-600">{item.total_credits.toFixed(2)} CapyCoins</p>
                                 <p className="text-xs text-gray-500">{item.unit_credits.toFixed(2)} each</p>
                               </div>
                             </div>
@@ -1146,31 +1179,31 @@ export default function AdminDashboard() {
                         <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
                           <button
                             onClick={() => {
-                              if (confirm(`Mark order #${order.id} as fulfilled?\n\nThis will:\n- Remove items from inventory\n- Mark order as completed\n\nNote: Credits (${order.total_credits.toFixed(2)}) were already deducted from user's balance.`)) {
-                                approveOrderMutation.mutate(order.id)
+                              if (confirm(`Fulfill order #${order.id}?\n\nThis will:\n- Remove items from inventory\n- Mark order as completed\n\nNote: Credits (${order.total_credits.toFixed(2)}) were already deducted from user's balance when order was placed.`)) {
+                                fulfillOrderMutation.mutate(order.id)
                               }
                             }}
-                            disabled={approveOrderMutation.isPending}
+                            disabled={fulfillOrderMutation.isPending}
                             className="flex-1 bg-capyx-500 hover:bg-capyx-600 text-gray-900 font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm md:text-base"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>{approveOrderMutation.isPending ? 'Approving...' : 'Approve & Mark Fulfilled'}</span>
+                            <span>{fulfillOrderMutation.isPending ? 'Fulfilling...' : 'Fulfill Order'}</span>
                           </button>
                           <button
                             onClick={() => {
-                              if (confirm(`Reject order #${order.id}?\n\nThis will:\n- Cancel the order\n- Release reserved inventory\n- REFUND ${order.total_credits.toFixed(2)} credits back to user`)) {
-                                rejectOrderMutation.mutate({ orderId: order.id })
+                              if (confirm(`Deny order #${order.id}?\n\nThis will:\n- Cancel the order\n- Release reserved inventory\n- REFUND ${order.total_credits.toFixed(2)} credits back to user`)) {
+                                denyOrderMutation.mutate({ orderId: order.id })
                               }
                             }}
-                            disabled={rejectOrderMutation.isPending}
+                            disabled={denyOrderMutation.isPending}
                             className="flex-1 border-2 border-red-500 hover:bg-red-50 text-red-600 font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm md:text-base"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            <span>{rejectOrderMutation.isPending ? 'Rejecting...' : 'Reject Order'}</span>
+                            <span>{denyOrderMutation.isPending ? 'Denying...' : 'Deny Order'}</span>
                           </button>
                         </div>
                       </div>
@@ -1182,8 +1215,8 @@ export default function AdminDashboard() {
                   <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-gray-600 text-lg font-medium">No Pending Orders</p>
-                  <p className="text-gray-500 text-sm mt-1">All order requests have been processed</p>
+                  <p className="text-gray-600 text-lg font-medium">No Orders Awaiting Fulfillment</p>
+                  <p className="text-gray-500 text-sm mt-1">All orders have been fulfilled or denied</p>
                 </div>
               )}
             </div>
@@ -1288,26 +1321,26 @@ export default function AdminDashboard() {
                 <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                   <button
                     onClick={() => {
-                      const pendingOrdersList = orders?.filter((order: any) => order.status === 'pending') || []
-                      if (pendingOrdersList.length === 0) {
-                        toast.error('No pending orders to approve')
+                      const processingOrdersList = orders?.filter((order: any) => order.status === 'processing') || []
+                      if (processingOrdersList.length === 0) {
+                        toast.error('No orders awaiting fulfillment')
                         return
                       }
-                      if (confirm(`Approve all ${pendingOrdersList.length} pending order(s)?\n\nThis will:\n- Remove items from inventory\n- Mark all orders as completed\n\nNote: Credits were already deducted from users' balances.`)) {
-                        // Approve each pending order
-                        pendingOrdersList.forEach((order: any) => {
-                          approveOrderMutation.mutate(order.id)
+                      if (confirm(`Fulfill all ${processingOrdersList.length} order(s)?\n\nThis will:\n- Remove items from inventory\n- Mark all orders as completed\n\nNote: Credits were already deducted from users' balances when orders were placed.`)) {
+                        // Fulfill each processing order
+                        processingOrdersList.forEach((order: any) => {
+                          fulfillOrderMutation.mutate(order.id)
                         })
                       }
                     }}
-                    disabled={approveOrderMutation.isPending || !orders?.some((order: any) => order.status === 'pending')}
+                    disabled={fulfillOrderMutation.isPending || !orders?.some((order: any) => order.status === 'processing')}
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-capyx-500 hover:bg-capyx-600 text-gray-900 font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm md:text-base"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="hidden sm:inline">Approve All Pending</span>
-                    <span className="sm:hidden">Approve All</span>
+                    <span className="hidden sm:inline">Fulfill All</span>
+                    <span className="sm:hidden">Fulfill All</span>
                   </button>
                   <div className="w-full sm:w-64">
                     <input
@@ -1335,11 +1368,13 @@ export default function AdminDashboard() {
                             <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
                               order.status === 'completed' 
                                 ? 'bg-green-100 text-green-800' 
+                                : order.status === 'processing'
+                                ? 'bg-blue-100 text-blue-800'
                                 : order.status === 'pending'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : 'bg-red-100 text-red-800'
                             }`}>
-                              {order.status.toUpperCase()}
+                              {order.status === 'processing' ? 'APPROVED - AWAITING FULFILLMENT' : order.status.toUpperCase()}
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 mt-1">
@@ -1381,27 +1416,27 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         
-                        {order.status === 'pending' && (
+                        {order.status === 'processing' && (
                           <div className="flex gap-2 ml-4">
                             <button
                               onClick={() => {
-                                if (confirm(`Approve order #${order.id}?`)) {
-                                  approveOrderMutation.mutate(order.id)
+                                if (confirm(`Fulfill order #${order.id}?`)) {
+                                  fulfillOrderMutation.mutate(order.id)
                                 }
                               }}
                               className="px-4 py-2 bg-capyx-500 hover:bg-capyx-600 text-gray-900 font-semibold rounded-lg text-sm"
                             >
-                              ✓ Approve
+                              ✓ Fulfill
                             </button>
                             <button
                               onClick={() => {
-                                if (confirm(`Reject order #${order.id}? Credits will be refunded.`)) {
-                                  rejectOrderMutation.mutate({ orderId: order.id })
+                                if (confirm(`Deny order #${order.id}? Credits will be refunded.`)) {
+                                  denyOrderMutation.mutate({ orderId: order.id })
                                 }
                               }}
                               className="px-4 py-2 border-2 border-red-500 hover:bg-red-50 text-red-600 font-semibold rounded-lg text-sm"
                             >
-                              ✗ Reject
+                              ✗ Deny
                             </button>
                           </div>
                         )}
@@ -1493,6 +1528,261 @@ export default function AdminDashboard() {
               filteredInventory={filteredInventory}
               refetchInventory={refetchInventory}
             />
+          )}
+
+          {activeTab === 'bulk_credits' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="text-lg md:text-xl font-semibold mb-2">Bulk CapyCoin Management</h2>
+                <p className="text-sm text-gray-600">Select multiple users and add or subtract CapyCoins from their accounts at once.</p>
+              </div>
+
+              {/* Bulk Action Controls */}
+              <div className="bg-gradient-to-br from-capyx-50 to-white border-2 border-capyx-300 rounded-lg p-6 mb-6">
+                <h3 className="font-semibold text-lg mb-4 text-capyx-800">Bulk Action</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Amount (use - for subtraction)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="e.g., 100 or -50"
+                      value={bulkAmount}
+                      onChange={(e) => setBulkAmount(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-capyx-500 focus:border-capyx-500"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Quarterly bonus"
+                      value={bulkDescription}
+                      onChange={(e) => setBulkDescription(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-capyx-500 focus:border-capyx-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() => {
+                      if (selectedUserIds.length === 0) {
+                        toast.error('Please select at least one user')
+                        return
+                      }
+                      if (!bulkAmount || parseFloat(bulkAmount) === 0) {
+                        toast.error('Please enter a valid amount')
+                        return
+                      }
+                      if (!bulkDescription) {
+                        toast.error('Please enter a description')
+                        return
+                      }
+                      
+                      const amount = parseFloat(bulkAmount)
+                      const action = amount > 0 ? 'add' : 'subtract'
+                      const absAmount = Math.abs(amount)
+                      
+                      if (confirm(`${action === 'add' ? 'Add' : 'Subtract'} ${absAmount} CapyCoins ${action === 'add' ? 'to' : 'from'} ${selectedUserIds.length} selected user(s)?`)) {
+                        bulkGrantCreditsMutation.mutate({
+                          userIds: selectedUserIds,
+                          amount: amount,
+                          description: bulkDescription
+                        })
+                      }
+                    }}
+                    disabled={bulkGrantCreditsMutation.isPending || selectedUserIds.length === 0 || !bulkAmount || !bulkDescription}
+                    className="flex-1 bg-capyx-500 hover:bg-capyx-600 disabled:bg-gray-300 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    <span>
+                      {bulkGrantCreditsMutation.isPending 
+                        ? 'Processing...' 
+                        : `Apply to ${selectedUserIds.length} User${selectedUserIds.length !== 1 ? 's' : ''}`
+                      }
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedUserIds([])
+                      toast.success('Selection cleared')
+                    }}
+                    disabled={selectedUserIds.length === 0}
+                    className="px-6 py-3 border-2 border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors"
+                  >
+                    Clear Selection
+                  </button>
+                </div>
+
+                {selectedUserIds.length > 0 && (
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>{selectedUserIds.length}</strong> user{selectedUserIds.length !== 1 ? 's' : ''} selected
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* User List with Checkboxes */}
+              <div>
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
+                  <h3 className="text-base md:text-lg font-semibold">Select Users</h3>
+                  <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                    <button
+                      onClick={() => {
+                        const filteredUsers = users?.filter((user: any) => {
+                          const searchLower = bulkUserSearchQuery.toLowerCase()
+                          return user.name.toLowerCase().includes(searchLower) || 
+                                 user.email.toLowerCase().includes(searchLower)
+                        }) || []
+                        const allIds = filteredUsers.map((u: any) => u.id)
+                        setSelectedUserIds(allIds)
+                        toast.success(`Selected ${allIds.length} user(s)`)
+                      }}
+                      className="px-4 py-2 bg-capyx-100 hover:bg-capyx-200 text-capyx-800 font-medium rounded-lg text-sm"
+                    >
+                      Select All
+                    </button>
+                    <div className="w-full sm:w-64">
+                      <input
+                        type="text"
+                        placeholder="Search users..."
+                        value={bulkUserSearchQuery}
+                        onChange={(e) => setBulkUserSearchQuery(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-capyx-500 focus:border-capyx-500 text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto border border-gray-200 rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left">
+                          <input
+                            type="checkbox"
+                            checked={selectedUserIds.length === users?.length && users?.length > 0}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedUserIds(users?.map((u: any) => u.id) || [])
+                              } else {
+                                setSelectedUserIds([])
+                              }
+                            }}
+                            className="w-4 h-4 text-capyx-600 border-gray-300 rounded focus:ring-capyx-500"
+                          />
+                        </th>
+                        <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                        <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {users?.filter((user: any) => {
+                        const searchLower = bulkUserSearchQuery.toLowerCase()
+                        return user.name.toLowerCase().includes(searchLower) || 
+                               user.email.toLowerCase().includes(searchLower)
+                      }).map((user: any) => (
+                        <tr 
+                          key={user.id} 
+                          className={`hover:bg-gray-50 cursor-pointer ${selectedUserIds.includes(user.id) ? 'bg-capyx-50' : ''}`}
+                          onClick={() => {
+                            if (selectedUserIds.includes(user.id)) {
+                              setSelectedUserIds(selectedUserIds.filter(id => id !== user.id))
+                            } else {
+                              setSelectedUserIds([...selectedUserIds, user.id])
+                            }
+                          }}
+                        >
+                          <td className="px-4 py-3">
+                            <input
+                              type="checkbox"
+                              checked={selectedUserIds.includes(user.id)}
+                              onChange={() => {}} // Handled by row click
+                              className="w-4 h-4 text-capyx-600 border-gray-300 rounded focus:ring-capyx-500"
+                            />
+                          </td>
+                          <td className="py-3 px-4 font-medium">{user.name}</td>
+                          <td className="py-3 px-4 text-sm text-gray-600">{user.email}</td>
+                          <td className="py-3 px-4">
+                            <span className="capitalize px-3 py-1 bg-capyx-100 text-capyx-800 rounded-full text-xs font-medium">
+                              {user.role}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-sm text-gray-600">
+                            {new Date(user.start_date).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3">
+                  {users?.filter((user: any) => {
+                    const searchLower = bulkUserSearchQuery.toLowerCase()
+                    return user.name.toLowerCase().includes(searchLower) || 
+                           user.email.toLowerCase().includes(searchLower)
+                  }).map((user: any) => (
+                    <div 
+                      key={user.id} 
+                      className={`border rounded-lg p-4 ${selectedUserIds.includes(user.id) ? 'border-capyx-400 bg-capyx-50' : 'border-gray-200'}`}
+                      onClick={() => {
+                        if (selectedUserIds.includes(user.id)) {
+                          setSelectedUserIds(selectedUserIds.filter(id => id !== user.id))
+                        } else {
+                          setSelectedUserIds([...selectedUserIds, user.id])
+                        }
+                      }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedUserIds.includes(user.id)}
+                          onChange={() => {}} // Handled by card click
+                          className="mt-1 w-4 h-4 text-capyx-600 border-gray-300 rounded focus:ring-capyx-500"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-base">{user.name}</h3>
+                          <p className="text-sm text-gray-600 break-words">{user.email}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="capitalize px-3 py-1 bg-capyx-100 text-capyx-800 rounded-full text-xs font-medium">
+                              {user.role}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              Since: {new Date(user.start_date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {users?.filter((user: any) => {
+                  const searchLower = bulkUserSearchQuery.toLowerCase()
+                  return user.name.toLowerCase().includes(searchLower) || 
+                         user.email.toLowerCase().includes(searchLower)
+                }).length === 0 && (
+                  <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+                    <p className="text-gray-600 text-lg">No users found</p>
+                    <p className="text-gray-500 text-sm mt-1">Try adjusting your search</p>
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>

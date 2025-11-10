@@ -242,9 +242,20 @@ class DevLoginRequest(BaseModel):
     name: Optional[str] = None
 
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
 # Admin schemas
 class CreditGrant(BaseModel):
     user_id: int
+    amount: float
+    description: str
+
+
+class BulkCreditGrant(BaseModel):
+    user_ids: List[int]
     amount: float
     description: str
 

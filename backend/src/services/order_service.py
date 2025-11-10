@@ -50,10 +50,10 @@ def process_order(db: Session, user: User, order_data: OrderCreate) -> Order:
     if balance < total_credits:
         raise ValueError("Insufficient credits")
     
-    # Create order
+    # Create order - AUTO-APPROVED (PROCESSING status)
     order = Order(
         user_id=user.id,
-        status=OrderStatus.PENDING,
+        status=OrderStatus.PROCESSING,  # Auto-approved, awaiting fulfillment
         total_credits=total_credits
     )
     db.add(order)
@@ -67,7 +67,7 @@ def process_order(db: Session, user: User, order_data: OrderCreate) -> Order:
         )
         db.add(order_item)
         
-        # Reserve inventory (don't deduct yet - only when admin approves)
+        # Reserve inventory (don't deduct yet - only when admin fulfills)
         inventory = db.query(InventoryLot).filter(
             InventoryLot.variant_id == item_data["variant_id"]
         ).first()
@@ -75,9 +75,9 @@ def process_order(db: Session, user: User, order_data: OrderCreate) -> Order:
     
     # DEDUCT credits immediately when order is created
     # This prevents employees from submitting orders they can't afford
-    deduct_credits(db, user.id, total_credits, f"Order #{order.id} - Pending Approval", order.id)
+    deduct_credits(db, user.id, total_credits, f"Order #{order.id} - Approved", order.id)
     
-    # Order stays in PENDING status until admin approves/rejects
+    # Order is auto-approved (PROCESSING status) and stays reserved until admin fulfills/denies
     
     db.commit()
     db.refresh(order)
@@ -85,14 +85,14 @@ def process_order(db: Session, user: User, order_data: OrderCreate) -> Order:
     return order
 
 
-def approve_order(db: Session, order_id: int) -> Order:
-    """Approve a pending order - deduct inventory (credits already deducted)"""
+def fulfill_order(db: Session, order_id: int) -> Order:
+    """Fulfill an approved order - deduct inventory (credits already deducted)"""
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise ValueError("Order not found")
     
-    if order.status != OrderStatus.PENDING:
-        raise ValueError(f"Order is not pending (status: {order.status})")
+    if order.status != OrderStatus.PROCESSING:
+        raise ValueError(f"Order is not in processing status (status: {order.status})")
     
     # Deduct inventory from reserved
     for item in order.items:
@@ -107,7 +107,7 @@ def approve_order(db: Session, order_id: int) -> Order:
     # Credits were already deducted when order was created
     # No need to deduct again
     
-    # Update order status
+    # Update order status to completed (fulfilled)
     order.status = OrderStatus.COMPLETED
     order.completed_at = datetime.utcnow()
     
@@ -117,16 +117,22 @@ def approve_order(db: Session, order_id: int) -> Order:
     return order
 
 
-def reject_order(db: Session, order_id: int, reason: str = None) -> Order:
-    """Reject a pending order - release reserved inventory and REFUND credits"""
+# Keep old name for backwards compatibility (deprecated)
+def approve_order(db: Session, order_id: int) -> Order:
+    """DEPRECATED: Use fulfill_order instead. Approve a pending order - deduct inventory (credits already deducted)"""
+    return fulfill_order(db, order_id)
+
+
+def deny_order(db: Session, order_id: int, reason: str = None) -> Order:
+    """Deny an approved order - release reserved inventory and REFUND credits"""
     from src.services.credit_service import grant_credits
     
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise ValueError("Order not found")
     
-    if order.status != OrderStatus.PENDING:
-        raise ValueError(f"Order is not pending (status: {order.status})")
+    if order.status != OrderStatus.PROCESSING:
+        raise ValueError(f"Order is not in processing status (status: {order.status})")
     
     # Release reserved inventory
     for item in order.items:
@@ -137,7 +143,7 @@ def reject_order(db: Session, order_id: int, reason: str = None) -> Order:
             inventory.reserved_quantity -= item.quantity
     
     # REFUND credits back to user (since they were deducted when order was created)
-    refund_description = f"Order #{order.id} - Refund (Rejected)"
+    refund_description = f"Order #{order.id} - Refund (Denied)"
     if reason:
         refund_description += f": {reason}"
     grant_credits(db, order.user_id, order.total_credits, refund_description, order.id)
@@ -149,6 +155,12 @@ def reject_order(db: Session, order_id: int, reason: str = None) -> Order:
     db.refresh(order)
     
     return order
+
+
+# Keep old name for backwards compatibility (deprecated)
+def reject_order(db: Session, order_id: int, reason: str = None) -> Order:
+    """DEPRECATED: Use deny_order instead. Reject a pending order - release reserved inventory and REFUND credits"""
+    return deny_order(db, order_id, reason)
 
 
 def check_and_reserve_inventory(db: Session, variant_id: int, quantity: int) -> bool:

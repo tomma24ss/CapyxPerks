@@ -51,23 +51,23 @@ export default function CheckoutPage() {
               <span className="flex-1">
                 {item.product_name} (×{item.quantity})
               </span>
-              <span className="font-semibold whitespace-nowrap">{(item.credits * item.quantity).toFixed(2)} Credits</span>
+              <span className="font-semibold whitespace-nowrap">{(item.credits * item.quantity).toFixed(2)} CapyCoins</span>
             </div>
           ))}
         </div>
         <div className="border-t pt-4 mt-4">
           <div className="flex justify-between text-base md:text-lg font-semibold">
             <span>Total:</span>
-            <span className="text-capyx-600">{getTotalCredits().toFixed(2)} Credits</span>
+            <span className="text-capyx-600">{getTotalCredits().toFixed(2)} CapyCoins</span>
           </div>
         </div>
       </div>
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4 mb-6">
         <p className="text-xs md:text-sm text-blue-800">
-          <strong>Order Request:</strong> By submitting this order, <strong>{getTotalCredits().toFixed(2)} credits will be deducted from your balance immediately</strong>. 
+          <strong>Order Request:</strong> By submitting this order, <strong>{getTotalCredits().toFixed(2)} capycoins will be deducted from your balance immediately</strong>. 
           An admin will review your request and mark it as fulfilled once you receive your items. 
-          If your order is rejected, the credits will be refunded to your account.
+          If your order is rejected, the capycoins will be refunded to your account.
         </p>
       </div>
 

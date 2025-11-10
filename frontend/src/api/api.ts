@@ -2,6 +2,16 @@ import { apiClient } from './client'
 import { Product, ProductDetail, Order, CreditBalance, CreditLedger, User, Variant } from '../types'
 
 export const authApi = {
+  login: async (email: string, password: string) => {
+    const response = await apiClient.post('/api/auth/login', { email, password })
+    return response.data
+  },
+  
+  getMockUsers: async () => {
+    const response = await apiClient.get('/api/auth/mock-users')
+    return response.data
+  },
+  
   getAzureLoginUrl: async () => {
     const response = await apiClient.get('/api/auth/azure')
     return response.data.auth_url
@@ -134,6 +144,15 @@ export const adminApi = {
     return response.data
   },
   
+  bulkGrantCredits: async (userIds: number[], amount: number, description: string) => {
+    const response = await apiClient.post('/api/admin/credits/bulk-grant', {
+      user_ids: userIds,
+      amount,
+      description,
+    })
+    return response.data
+  },
+  
   getUserBalance: async (userId: number) => {
     const response = await apiClient.get(`/api/admin/users/${userId}/balance`)
     return response.data
@@ -166,18 +185,38 @@ export const adminApi = {
     return response.data
   },
   
+  getProcessingOrders: async (): Promise<Order[]> => {
+    const response = await apiClient.get('/api/admin/orders/processing')
+    return response.data
+  },
+  
+  // Backwards compatibility - keep old name
   getPendingOrders: async (): Promise<Order[]> => {
-    const response = await apiClient.get('/api/admin/orders/pending')
+    const response = await apiClient.get('/api/admin/orders/processing')
     return response.data
   },
   
+  fulfillOrder: async (orderId: number) => {
+    const response = await apiClient.post(`/api/admin/orders/${orderId}/fulfill`)
+    return response.data
+  },
+  
+  // Backwards compatibility - keep old name
   approveOrder: async (orderId: number) => {
-    const response = await apiClient.post(`/api/admin/orders/${orderId}/approve`)
+    const response = await apiClient.post(`/api/admin/orders/${orderId}/fulfill`)
     return response.data
   },
   
+  denyOrder: async (orderId: number, reason?: string) => {
+    const response = await apiClient.post(`/api/admin/orders/${orderId}/deny`, null, {
+      params: { reason }
+    })
+    return response.data
+  },
+  
+  // Backwards compatibility - keep old name
   rejectOrder: async (orderId: number, reason?: string) => {
-    const response = await apiClient.post(`/api/admin/orders/${orderId}/reject`, null, {
+    const response = await apiClient.post(`/api/admin/orders/${orderId}/deny`, null, {
       params: { reason }
     })
     return response.data
